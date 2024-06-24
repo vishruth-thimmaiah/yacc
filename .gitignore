@@ -41,6 +41,8 @@ go.work
 
 # End of https://www.toptal.com/developers/gitignore/api/go,linux
 
+# Bin
+go-msg
 
 # Vue
 *.log

@@ -1,17 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import login from "@/views/login.vue"
+import signup from "@/views/signup.vue"
+import pageNotFound from "@/views/404.vue"
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: '/',
-			name: 'home',
-			component: HomeView
+			redirect: {
+				name: 'login'
+			}
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: login
+		},
+		{
+			path: '/signup',
+			name: 'signup',
+			component: signup
 		},
 		{
 			path: '/:pathMatch(.*)*',
-			component: import('../views/PageNotFound.vue')
+			component: pageNotFound
 		}
 
 	]
