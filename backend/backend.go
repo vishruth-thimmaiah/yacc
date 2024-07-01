@@ -2,12 +2,15 @@ package backend
 
 import (
 	"cmp"
+	"go-msg/backend/internal/api"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func Init() {
+func Start(conn *pgxpool.Pool) {
 	port := cmp.Or(os.Getenv("PORT"), "3000")
 
 	// Frontend
