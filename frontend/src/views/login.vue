@@ -1,9 +1,10 @@
 <template>
 	<div class="background">
-		<form class="login-box">
+		<form class="login-box" method="post" action="/api/user/login">
 			<label class="heading">Login</label>
-			<input class="email" placeholder="email"> </input>
-			<input class="password" :type="showPasswd ? 'text' : 'password'" placeholder="password"> </input>
+			<input class="email" name="email" placeholder="email"> </input>
+			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
+			</input>
 			<div class="show-passwd">
 				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
 				<label for="test">Show Password</label>
