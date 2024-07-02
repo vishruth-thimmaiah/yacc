@@ -28,6 +28,7 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/user/logout", api.Logout)
 	http.HandleFunc("/api/user/signup", api.Signup)
 
+	http.HandleFunc("/api/user/contacts", api.Contacts)
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),
 	)

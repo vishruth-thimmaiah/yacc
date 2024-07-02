@@ -57,3 +57,13 @@ func Signup(email string, passwd string) (string, error) {
 
 	return session_id.String(), err
 }
+
+func SessionInfo(session_id string) (string, error) {
+	var id string
+	err := Pool.QueryRow(context.Background(), `select id from session where sessionid = $1 limit 1`, session_id).Scan(&id)
+	if err != nil {
+		return "", err
+	}
+
+	return id, err
+}

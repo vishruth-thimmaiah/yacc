@@ -7,5 +7,10 @@ CREATE TABLE users (
 
 CREATE TABLE session (
 	sessionid uuid primary key default(uuid_generate_v4()),
-    id uuid not null references users(id)
+    id uuid not null references users(id) on delete cascade
+);
+
+CREATE TABLE contacts (
+	senderid uuid not null references users(id) on delete cascade,
+	recieverid uuid not null references users(id) on delete cascade
 );
