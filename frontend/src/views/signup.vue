@@ -1,14 +1,13 @@
 <template>
 	<div class="background">
-		<form class="signup-box">
+		<form class="signup-box" method="post" action="/api/user/signup">
 			<label class="heading">Sign Up</label>
-			<input class="email" placeholder="email"> </input>
-			<div class="password">
-				<input :type="showPasswd ? 'text' : 'password'" placeholder="password"> </input>
-				<div>
-					<input type="checkbox" id="test" v-model="showPasswd"></input>
-					<label for="test">Show Password</label>
-				</div>
+			<input class="email" name="email" placeholder="email"> </input>
+			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
+			</input>
+			<div class="show-passwd">
+				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
+				<label for="test">Show Password</label>
 			</div>
 			<button>Sign Up</button>
 			<label class="signup">Already have an account? <router-link to="/login">Login</router-link></label>
@@ -40,9 +39,9 @@ const showPasswd = ref(false)
 }
 
 .signup-box {
-	padding: 10px;
+	padding: 5%;
 	width: clamp(50%, 15rem, 15rem);
-	height: clamp(70%, 10rem, 10rem);
+	height: clamp(70%, 25rem, 25rem);
 	background-color: rgba(0, 0, 0, 0.3);
 	border-radius: 10px;
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -56,15 +55,17 @@ const showPasswd = ref(false)
 		border: none;
 		border-radius: 10px;
 		padding: 20px 10px;
-		width: clamp(50%, 15rem, 12rem);
+		width: 100%;
+		font-size: 16px;
 	}
 
 	button {
+		grid-area: signup;
 		border: none;
 		border-radius: 10px;
 		padding: 10px 5px;
 		width: 10rem;
-		margin: 5rem 0 2rem 0;
+		margin: auto 0 2rem 0;
 		background-color: #6DB9EF;
 	}
 
@@ -80,14 +81,18 @@ const showPasswd = ref(false)
 	}
 
 	.email {
-		margin-bottom: 1rem;
+		margin: 1rem;
+	}
+
+	.show-passwd {
+		margin-right: auto;
 	}
 
 	.heading {
 		grid-area: Heading;
 		font-family: "Playwrite DE Grund", cursive;
 		font-weight: bold;
-		font-size: 25px;
+		font-size: 40px;
 		margin-bottom: 5vh;
 		color: #6DB9EF;
 	}

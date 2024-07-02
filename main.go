@@ -10,19 +10,23 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var Test string = "test"
+var Pool *pgxpool.Pool
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env")
 	}
 
-	conn, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
+	pool, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
 	if err != nil {
 		log.Fatal("Unable to connect to db")
 		os.Exit(1)
 	}
-	defer conn.Close()
+	Pool = pool
+	
 
-	backend.Start(conn)
+	defer pool.Close()
+
+	backend.Start(pool)
 }

@@ -3,6 +3,7 @@ package backend
 import (
 	"cmp"
 	"go-msg/backend/internal/api"
+	"go-msg/backend/internal/db"
 	"log"
 	"net/http"
 	"os"
@@ -11,8 +12,9 @@ import (
 )
 
 func Start(conn *pgxpool.Pool) {
-	port := cmp.Or(os.Getenv("PORT"), "3000")
 
+	port := cmp.Or(os.Getenv("PORT"), "3000")
+	db.Setup(conn)
 	// Frontend
 	fs := http.FileServer(http.Dir("frontend/dist"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +23,11 @@ func Start(conn *pgxpool.Pool) {
 	})
 	http.Handle("/assets/", fs)
 
-	// Start the server.
+	// Backend
+	http.HandleFunc("/api/user/login", users.Login)
+	http.HandleFunc("/api/user/logout", users.Logout)
+	http.HandleFunc("/api/user/signup", users.Signup)
+
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),
 	)
