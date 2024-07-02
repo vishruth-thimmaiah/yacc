@@ -1,6 +1,11 @@
 CREATE TABLE users (
-	uuid bigserial not null primary key,
+    id uuid primary key default(uuid_generate_v4()),
 	username text,
 	email text not null unique,
-	passwd char(66) not null,
+	passwd char(65) not null
+);
+
+CREATE TABLE session (
+	sessionid uuid primary key default(uuid_generate_v4()),
+    id uuid not null references users(id)
 );

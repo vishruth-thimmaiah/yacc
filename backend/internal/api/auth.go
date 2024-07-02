@@ -1,9 +1,8 @@
-package users
+package api
 
 import (
 	"go-msg/backend/internal/db"
 	"go-msg/backend/internal/helpers"
-	"log"
 	"net/http"
 )
 
@@ -32,7 +31,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: false}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true}
 	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/messages", http.StatusPermanentRedirect)
@@ -73,16 +72,15 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.Signup(loginDetails.Email, hash)
+	session_id, err := db.Signup(loginDetails.Email, hash)
 
 	if err != nil {
-		log.Println(err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
-	// cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: false}
-	// http.SetCookie(w, cookie)
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true}
+	http.SetCookie(w, cookie)
 
 	http.Redirect(w, r, "/messages", http.StatusPermanentRedirect)
 

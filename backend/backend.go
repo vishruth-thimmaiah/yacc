@@ -24,9 +24,9 @@ func Start(conn *pgxpool.Pool) {
 	http.Handle("/assets/", fs)
 
 	// Backend
-	http.HandleFunc("/api/user/login", users.Login)
-	http.HandleFunc("/api/user/logout", users.Logout)
-	http.HandleFunc("/api/user/signup", users.Signup)
+	http.HandleFunc("/api/user/login", api.Login)
+	http.HandleFunc("/api/user/logout", api.Logout)
+	http.HandleFunc("/api/user/signup", api.Signup)
 
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),
