@@ -1,5 +1,5 @@
 <template>
-	<div :class="sending ? 'sending' : 'receiving'">
+	<div :class="sending ? 'receiving' : 'sending'">
 		<label>{{ message }}</label>
 	</div>
 </template>
@@ -18,12 +18,14 @@ defineProps({
 }
 
 .sending {
-	background-color: red;
+	background-color: #AAD7D9;
 	border-radius: 10px 0px 10px 10px;
+	margin-left: 4rem;
 }
 
 .receiving {
-	background-color: blue;
+	background-color: #ffa096;
 	border-radius: 0px 10px 10px 10px;
+	margin-right: 4rem;
 }
 </style>

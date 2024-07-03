@@ -1,22 +1,32 @@
 <template>
-	<div>
-		{{name}}
-	</div>
+	<RouterLink :to="'/messages/' + uuid"> {{ name }} </RouterLink>
 </template>
 
 <script setup lang="ts">
+import { RouterLink} from 'vue-router';
+
+
 defineProps({
-	name: String
+	name: String,
+	uuid: String
 });
 
 </script>
 
 <style scoped>
-div {
+a {
 	width: 90%;
 	background-color: #37846824;
 	margin: 10px;
 	padding: 10px;
+	border: none;
 	border-radius: 10px;
+	font-family: "M PLUS Rounded 1c", sans-serif;
+	transition: 300ms background-color;
+	text-decoration: none;
+
+	&:hover {
+		background-color: #37846847;
+	}
 }
 </style>
