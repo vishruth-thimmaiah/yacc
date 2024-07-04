@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"go-msg/backend/internal/db"
+	"yacc/backend/internal/db"
 	"log"
 	"net/http"
 )

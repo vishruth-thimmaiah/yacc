@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"errors"
-	"go-msg/backend/internal/helpers"
+	"yacc/backend/internal/helpers"
 	"log"
 
 	"github.com/google/uuid"

@@ -2,8 +2,8 @@ package backend
 
 import (
 	"cmp"
-	"go-msg/backend/internal/api"
-	"go-msg/backend/internal/db"
+	"yacc/backend/internal/api"
+	"yacc/backend/internal/db"
 	"log"
 	"net/http"
 	"os"

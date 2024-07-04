@@ -1,4 +1,4 @@
-module go-msg
+module yacc
 
 go 1.22.3
 

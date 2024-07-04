@@ -1,8 +1,8 @@
 package api
 
 import (
-	"go-msg/backend/internal/db"
-	"go-msg/backend/internal/helpers"
+	"yacc/backend/internal/db"
+	"yacc/backend/internal/helpers"
 	"net/http"
 )
 
