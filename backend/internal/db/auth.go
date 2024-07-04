@@ -67,3 +67,8 @@ func SessionInfo(session_id string) (string, error) {
 
 	return id, err
 }
+
+func Logout(session_id string) error {
+	_, err := Pool.Exec(context.Background(), `delete from session where sessionid = $1`, session_id)
+	return err
+} 

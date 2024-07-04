@@ -41,7 +41,13 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	session_cookie, err := r.Cookie("session_id")
 
 	if err != nil || session_cookie.Value == "" {
-		http.Error(w, "user not logged in", http.StatusBadRequest)
+		http.Error(w, "user not logged in", http.StatusUnauthorized)
+		return
+	}
+
+	err = db.Logout(session_cookie.Name)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
