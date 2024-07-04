@@ -11,14 +11,13 @@ CREATE TABLE session (
 );
 
 CREATE TABLE messages (
-	-- messageid bigserial not null,
 	senderid uuid not null references users(id) on delete cascade,
-	recieverid uuid not null references users(id) on delete cascade,
+	receiverid uuid not null references users(id) on delete cascade,
 	message text not null,
-	date date not null
+	date timestamp with time zone not null
 );
 
 CREATE TABLE contacts (
 	senderid uuid not null references users(id) on delete cascade,
-	recieverid uuid not null references users(id) on delete cascade
+	receiverid uuid not null references users(id) on delete cascade
 );

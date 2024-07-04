@@ -10,7 +10,7 @@ type Contact struct {
 }
 
 func GetContacts(id string) ([]Contact, error) {
-	rows, err := Pool.Query(context.Background(), "select id, username from users where id = (select senderid from contacts where recieverid = $1)", id)
+	rows, err := Pool.Query(context.Background(), "select id, username from users where id in (select senderid from contacts where receiverid = $1)", id)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 )
 
 type Message struct {
@@ -11,11 +10,11 @@ type Message struct {
 }
 
 func GetMessages(sender string, id string) ([]Message, error) {
-	query := "(select message, true from messages where senderid = $1 and recieverid = $2) union (select message, false from messages where senderid = $2 and recieverid = $1)"
-	sent, serr := Pool.Query(context.Background(), query, sender, id)
+	query := "(select message, true from messages where senderid = $1 and receiverid = $2) union (select message, false from messages where senderid = $2 and receiverid = $1)"
+	sent, err := Pool.Query(context.Background(), query, sender, id)
 
-	if serr != nil {
-		return nil, serr
+	if err != nil {
+		return nil, err
 	}
 
 	var messages []Message
@@ -29,6 +28,5 @@ func GetMessages(sender string, id string) ([]Message, error) {
 		messages = append(messages, message)
 	}
 
-	log.Println(messages)
 	return messages, nil
 }
