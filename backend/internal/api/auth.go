@@ -31,10 +31,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path: "/api"}
 	http.SetCookie(w, cookie)
-
-	http.Redirect(w, r, "/messages", http.StatusPermanentRedirect)
 
 }
 
@@ -79,9 +77,6 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path:"/api"}
 	http.SetCookie(w, cookie)
-
-	http.Redirect(w, r, "/messages", http.StatusPermanentRedirect)
-
 }
