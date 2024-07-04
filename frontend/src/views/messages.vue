@@ -5,6 +5,7 @@
 
 	<form @submit.prevent="submitMessage" class="new-message">
 		<input placeholder="send something" v-model="newMessage"></input>
+		<button><i class="fa-solid fa-reply fa-rotate-180 fa-fw"></i></button>
 	</form>
 </template>
 
@@ -43,30 +44,47 @@ async function submitMessage() {
 	axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/send", {
 		message: newMessage.value,
 		receiver: props.user
+	}).then(function (response) {
+		messages.value.push({ message: newMessage.value!, sent: false })
+		newMessage.value = ""
 	})
+
 }
 </script>
 
 <style scoped>
 .new-message {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
-	/* margin: 10px auto; */
-	width: auto;
+	right: 0;
+	left: clamp(25%, 20rem, 20rem);
+	margin: 1rem auto;
+	width: max-content;
+	border-radius: 10px;
+	padding: 10px;
+	background: white;
 
 	input {
 		font-family: "M PLUS Rounded 1c", sans-serif;
 		font-size: 15px;
 		border: none;
-		border-radius: 10px;
-		padding: 10px;
-		margin: 10px;
-		width: auto;
+		width: 50vw;
 		z-index: 2;
+		color: grey;
 
 		&:focus {
 			outline: none;
-			background-color: #37846824;
+			color: black;
+		}
+	}
+
+	button {
+		background: none;
+		border: none;
+		transition: 300ms transform;
+
+		&:hover {
+			transform: scale(1.5);
 		}
 	}
 }

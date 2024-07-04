@@ -23,6 +23,7 @@ a {
 	font-family: "M PLUS Rounded 1c", sans-serif;
 	transition: 300ms background-color;
 	text-decoration: none;
+	color: black;
 
 	&:hover {
 		background-color: #37846847;
