@@ -41,13 +41,15 @@ watch(() => route.params, async function () {
 
 const newMessage = ref<string>()
 async function submitMessage() {
-	axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/send", {
-		message: newMessage.value,
-		receiver: props.user
-	}).then(function (response) {
-		messages.value.push({ message: newMessage.value!, sent: false })
+	if (newMessage.value && newMessage.value != "") {
+		await axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/send", {
+			message: newMessage.value,
+			receiver: props.user
+		}).then(function (_) {
+			messages.value.push({ message: newMessage.value!, sent: false })
+		})
 		newMessage.value = ""
-	})
+	}
 
 }
 </script>

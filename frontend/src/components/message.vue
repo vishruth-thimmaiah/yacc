@@ -12,7 +12,11 @@ defineProps({
 </script>
 
 <style scoped>
-.sending, .receiving {
+.sending,
+.receiving {
+	font-family: "M PLUS Rounded 1c", sans-serif;
+	font-size: 15px;
+	font-weight: bold;
 	margin: 2rem 1rem;
 	padding: 2rem;
 }

@@ -37,6 +37,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 	top: 0;
 	margin: 10px;
 	border-radius: 10px;
+	user-select: none;
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;
