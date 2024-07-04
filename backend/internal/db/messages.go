@@ -30,3 +30,8 @@ func GetMessages(sender string, id string) ([]Message, error) {
 
 	return messages, nil
 }
+
+func SendMessage(message string, id string, receiver string) error {
+	_, err := Pool.Exec(context.Background(), `insert into messages(senderid, receiverid, message) values($1, $2, $3)`, id, receiver, message)
+	return err
+}

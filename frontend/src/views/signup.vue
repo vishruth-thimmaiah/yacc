@@ -1,6 +1,6 @@
 <template>
 	<div class="background">
-		<form class="signup-box" method="post" action="/api/user/signup">
+		<form class="signup-box" method="post" :action="path">
 			<label class="heading">Sign Up</label>
 			<input class="email" name="email" placeholder="email"> </input>
 			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">

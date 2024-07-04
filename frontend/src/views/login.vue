@@ -1,6 +1,6 @@
 <template>
 	<div class="background">
-		<form class="login-box" method="post" action="/api/user/login">
+		<form class="login-box" method="post" :action="path">
 			<label class="heading">Login</label>
 			<input class="email" name="email" placeholder="email"> </input>
 			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
@@ -10,8 +10,8 @@
 				<label for="test">Show Password</label>
 			</div>
 			<button>Login</button>
-			<label class="signup">Don't have an account? <router-link to="/signup">Sign Up</router-link></label>
-			<label class="forgotpasswd">Forgot <router-link to="/forgot">Password</router-link>?</label>
+			<label class="signup">Don't have an account? <router-link to="/signup">sign up</router-link> </label>
+			<label class="forgotpasswd">Forgot <router-link to="/forgot">Password</router-link>? </label>
 		</form>
 	</div>
 </template>

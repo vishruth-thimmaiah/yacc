@@ -11,9 +11,6 @@
 	</div>
 	<div class="messages">
 		<RouterView />
-		<form class="new-message">
-			<input ></input>
-		</form>
 	</div>
 </template>
 
@@ -38,6 +35,8 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 	left: 0;
 	bottom: 0;
 	top: 0;
+	margin: 10px;
+	border-radius: 10px;
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;
@@ -69,18 +68,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 }
 
 .messages {
-	position: fixed;
-	bottom: 0;
-	top: 0;
-	left: clamp(25%, 20rem, 20rem);
-	right: 0;
-	width: auto;
-}
-
-.new-message {
-	position: absolute;
-	bottom: 0;
-	/* margin: 10px auto; */
-	margin-left: auto;
+	margin-left: clamp(25%, 20rem, 20rem);
+	padding-left: 1rem;
 }
 </style>
