@@ -1,10 +1,9 @@
 <template>
-	<RouterLink :to="'/messages/' + uuid"> {{ name }} </RouterLink>
+	<RouterLink :to="'/u/' + uuid"> {{ name }} </RouterLink>
 </template>
 
 <script setup lang="ts">
 import { RouterLink} from 'vue-router';
-
 
 defineProps({
 	name: String,

@@ -3,16 +3,21 @@ import login from "@/views/login.vue"
 import signup from "@/views/signup.vue"
 import pageNotFound from "@/views/404.vue"
 import chat from '@/views/chats.vue'
-import message from '@/views/messages.vue'
+import messages from '@/views/messages.vue'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: '/',
-			redirect: {
-				name: 'login'
-			}
+			component: chat,
+			children: [
+				{
+					path: "/u/:user",
+					component: messages,
+					props: true
+				}
+			]
 		},
 		{
 			path: '/login',
@@ -23,18 +28,6 @@ const router = createRouter({
 			path: '/signup',
 			name: 'signup',
 			component: signup
-		},
-		{
-			path: '/messages',
-			name: 'messages',
-			component: chat,
-			children: [
-				{
-					path: ":user",
-					component: message,
-					props: true
-				}
-			]
 		},
 		{
 			path: '/:pathMatch(.*)*',
