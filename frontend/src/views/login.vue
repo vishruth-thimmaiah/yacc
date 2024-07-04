@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/user/login'
 
 const showPasswd = ref(false)
 </script>

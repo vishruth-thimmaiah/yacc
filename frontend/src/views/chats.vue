@@ -24,11 +24,9 @@ import axios from 'axios';
 import { ref } from 'vue';
 
 const contacts = ref<{ name: string, id: string }[]>([])
-
-axios.get("/api/user/contacts").then(function (response) {
+axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(function (response) {
 	contacts.value = response.data
 })
-
 
 </script>
 

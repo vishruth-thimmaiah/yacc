@@ -11,6 +11,7 @@ const router = createRouter({
 		{
 			path: '/',
 			component: chat,
+			name: "home",
 			children: [
 				{
 					path: "/u/:user",
@@ -18,6 +19,12 @@ const router = createRouter({
 					props: true
 				}
 			]
+		},
+		{
+			path: "/u",
+			redirect: {
+				name: "home"
+			}
 		},
 		{
 			path: '/login',
