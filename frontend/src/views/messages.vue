@@ -2,6 +2,7 @@
 	<div>
 		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent"></message>
 	</div>
+
 	<form @submit.prevent="submitMessage" class="new-message">
 		<input placeholder="send something" v-model="newMessage"></input>
 	</form>
@@ -10,20 +11,32 @@
 <script setup lang="ts">
 import message from '@/components/message.vue';
 import axios from 'axios';
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
 const props = defineProps({
 	user: String
 })
-
 const messages = ref<{ message: string, sent: boolean }[]>([])
 
-axios.post("/api/user/message", {
-	sender: props.user
-}).then(function (response) {
-	messages.value = response.data
+async function loadMessages() {
+	messages.value = []
+	axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/message", {
+		sender: props.user
+	}).then(function (response) {
+		messages.value = response.data
+	})
+
+}
+
+onMounted(async () => {
+	loadMessages()
 })
 
-console.log(messages.value)
+watch(() => route.params, async function () {
+	loadMessages()
+})
 
 const newMessage = ref<string>()
 async function submitMessage() {
