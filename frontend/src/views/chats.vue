@@ -4,10 +4,9 @@
 		<div class="contacts">
 			<contact v-for="ctc in contacts" :name="ctc.name" :chat="ctc.chat_id" />
 		</div>
-		<div class="options">
-			<i class="fa-solid fa-user fa-fw fa-2xl"></i>
-			<label>user</label>
-		</div>
+		<RouterLink to="/settings" class="options">
+			<i class="fa-solid fa-gear fa-fw fa-xl"></i>
+		</RouterLink>
 	</div>
 	<div class="messages">
 		<RouterView />
@@ -31,7 +30,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 .sidebar {
 	position: fixed;
 	width: clamp(25%, 20rem, 20rem);
-	background-color: #fc8277;
+	background-color: var(--accent-color);
 	left: 0;
 	bottom: 0;
 	top: 0;
@@ -59,12 +58,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 		position: absolute;
 		bottom: 0;
 		margin: 0 0 10px 5px;
-
-		label {
-			font-family: "M PLUS Rounded 1c", sans-serif;
-			font-weight: bold;
-			font-size: 20px;
-		}
+		color: black;
 	}
 }
 

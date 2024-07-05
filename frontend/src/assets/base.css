@@ -8,9 +8,19 @@
 /* #6DB9EF */
 /* #3081D0 */
 :root.light {
-	--background-color: #dddddd;
+	--background-color: #eeeeee;
+	--secondary-color: #dddddd;
+	--text-primary-color: #111111;
+	--accent-color: #fc8277;
+	--chat-sent-color: #ffa096;
+	--chat-received-color: #AAD7D9;
 }
 
 :root.dark {
 	--background-color: #222222;
+	--secondary-color: #333333;
+	--text-primary-color: #ffffff;
+	--accent-color: #fc8277;
+	--chat-sent-color: #e6665c;
+	--chat-received-color: #6DB9EF;
 }

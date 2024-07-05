@@ -22,13 +22,13 @@ defineProps({
 }
 
 .sending {
-	background-color: #AAD7D9;
+	background-color: var(--chat-received-color);
 	border-radius: 10px 0px 10px 10px;
 	margin-left: 4rem;
 }
 
 .receiving {
-	background-color: #ffa096;
+	background-color: var(--chat-sent-color);
 	border-radius: 0px 10px 10px 10px;
 	margin-right: 4rem;
 }

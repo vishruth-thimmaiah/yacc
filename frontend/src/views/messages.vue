@@ -63,7 +63,7 @@ async function submitMessage() {
 	width: max-content;
 	border-radius: 10px;
 	padding: 10px;
-	background: white;
+	background: var(--secondary-color);
 
 	input {
 		font-family: "M PLUS Rounded 1c", sans-serif;
@@ -72,10 +72,11 @@ async function submitMessage() {
 		width: 50vw;
 		z-index: 2;
 		color: grey;
+		background: none;
 
 		&:focus {
 			outline: none;
-			color: black;
+			color: var(--text-primary-color);
 		}
 	}
 
@@ -83,6 +84,7 @@ async function submitMessage() {
 		background: none;
 		border: none;
 		transition: 300ms transform;
+		color: var(--text-primary-color);
 
 		&:hover {
 			transform: scale(1.5);

@@ -67,7 +67,7 @@ const showPasswd = ref(false)
 		padding: 10px 5px;
 		width: 10rem;
 		margin: auto 0 2rem 0;
-		background-color: #6DB9EF;
+		background-color: var(--accent-color);
 	}
 
 	label {
@@ -76,7 +76,7 @@ const showPasswd = ref(false)
 		font-size: 14px;
 
 		a {
-			color: #6DB9EF;
+			color: var(--accent-color);
 			text-decoration: none;
 		}
 	}
@@ -95,7 +95,7 @@ const showPasswd = ref(false)
 		font-weight: bold;
 		font-size: 40px;
 		margin-bottom: 5vh;
-		color: #6DB9EF;
+		color: var(--accent-color);
 	}
 }
 </style>
