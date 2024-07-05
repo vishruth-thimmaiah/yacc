@@ -64,7 +64,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 
 .messages {
 	position: fixed;
-	left: clamp(25%, 21rem, 21rem);
+	left: clamp(26%, 21rem, 21rem);
 	top: 0;
 	bottom: 0;
 	right: 0.5rem;

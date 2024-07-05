@@ -1,7 +1,11 @@
 <template>
-	<div>
+	<div class="sidebar">
 		<h1> Settings </h1>
 		<h2>General</h2>
+	</div>
+	<div class="settings">
+		<h3>UI</h3>
+		<hr />
 		<div class="dark-mode">
 			<label for="dark-mode">Dark Mode</label>
 			<select v-model="darkMode" @change="changeMode">
@@ -10,7 +14,6 @@
 				<option value="dark">Dark</option>
 			</select>
 		</div>
-
 	</div>
 </template>
 
@@ -35,27 +38,63 @@ function changeMode() {
 </script>
 
 <style scoped>
-h1 {
-	font-family: "Playwrite DE Grund", cursive;
-	font-weight: bold;
-	font-size: 40px;
-}
+.sidebar {
+	position: fixed;
+	width: clamp(25%, 20rem, 20rem);
+	background-color: var(--accent-color);
+	left: 0;
+	bottom: 0;
+	top: 0;
+	margin: 0.5rem;
+	border-radius: 10px;
+	user-select: none;
 
-h2 {
-	font-family: "Playwrite DE Grund", cursive;
-	font-weight: bold;
-	font-size: 25px;
-}
-
-.dark-mode {
-	label {
-		user-select: none;
+	h1 {
+		font-family: "Playwrite DE Grund", cursive;
+		font-weight: bold;
+		font-size: 40px;
 	}
 
-	select {
-		border: none;
-		padding: 5px;
-		border-radius: 5px;
+	h2 {
+		font-family: "Playwrite DE Grund", cursive;
+		font-weight: bold;
+		font-size: 25px;
+	}
+}
+
+.settings {
+	position: fixed;
+	left: clamp(26%, 21rem, 21rem);
+	top: 0;
+	bottom: 0;
+	right: 0.5rem;
+
+	h3 {
+		font-family: "Playwrite DE Grund", cursive;
+		font-size: 25px;
+		color: var(--text-primary-color);
+	}
+
+	.dark-mode {
+		color: var(--text-primary-color);
+		font-family: "M PLUS Rounded 1c", sans-serif;
+		font-size: 15px;
+
+		label {
+			user-select: none;
+			display: inline-block;
+			width: 60%;
+		}
+
+		select {
+			color: var(--text-primary-color);
+			border: none;
+			padding: 7px 10px;
+			border-radius: 5px;
+			background: var(--secondary-color);
+			font-size: 15px;
+			width: 40%;
+		}
 	}
 }
 </style>

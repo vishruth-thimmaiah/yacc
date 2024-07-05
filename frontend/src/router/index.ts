@@ -1,27 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import login from "@/views/login.vue"
-import signup from "@/views/signup.vue"
-import pageNotFound from "@/views/404.vue"
-import chat from '@/views/chats.vue'
-import messages from '@/views/messages.vue'
-import defaults from '@/views/default.vue'
+import Login from "@/views/login.vue"
+import Signup from "@/views/signup.vue"
+import PageNotFound from "@/views/404.vue"
+import Chat from '@/views/chats.vue'
+import Messages from '@/views/messages.vue'
+import Defaults from '@/views/default.vue'
+import Settings from '@/views/settings.vue'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
 			path: '/',
-			component: chat,
+			component: Chat,
 			name: "home",
 			children: [
 				{
 					path: "",
-					component: defaults
+					component: Defaults,
+					name: "home"
 				},
 				{
 					path: "/u/:chat",
-					component: messages,
-					props: true
+					component: Messages,
+					props: true,
+					name: "users"
 				}
 			]
 		},
@@ -34,16 +37,21 @@ const router = createRouter({
 		{
 			path: '/login',
 			name: 'login',
-			component: login
+			component: Login
 		},
 		{
 			path: '/signup',
 			name: 'signup',
-			component: signup
+			component: Signup
+		},
+		{
+			path: '/settings',
+			name: 'settings',
+			component: Settings
 		},
 		{
 			path: '/:pathMatch(.*)*',
-			component: pageNotFound
+			component: PageNotFound
 		}
 
 	]

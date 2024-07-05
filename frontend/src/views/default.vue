@@ -16,6 +16,7 @@ div {
 	flex-direction: column;
 	justify-content: center;
 	user-select: none;
+	color: var(--text-primary-color);
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;
