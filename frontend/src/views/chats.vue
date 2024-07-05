@@ -35,7 +35,7 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 	left: 0;
 	bottom: 0;
 	top: 0;
-	margin: 10px;
+	margin: 0.5rem;
 	border-radius: 10px;
 	user-select: none;
 
@@ -50,9 +50,9 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 		right: 0;
 		left: 0;
 		top: 6rem;
-		height: 80%;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 	}
 
 	.options {
@@ -69,7 +69,10 @@ axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(
 }
 
 .messages {
-	margin-left: clamp(25%, 20rem, 20rem);
-	padding-left: 1rem;
+	position: fixed;
+	left: clamp(25%, 21rem, 21rem);
+	top: 0;
+	bottom: 0;
+	right: 0.5rem;
 }
 </style>
