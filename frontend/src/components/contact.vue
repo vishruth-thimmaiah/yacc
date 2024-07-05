@@ -1,5 +1,5 @@
 <template>
-	<RouterLink :to="'/u/' + uuid"> {{ name }} </RouterLink>
+	<RouterLink :to="'/u/' + chat"> {{ name }} </RouterLink>
 </template>
 
 <script setup lang="ts">
@@ -7,7 +7,7 @@ import { RouterLink} from 'vue-router';
 
 defineProps({
 	name: String,
-	uuid: String
+	chat: String
 });
 
 </script>

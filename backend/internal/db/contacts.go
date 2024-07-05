@@ -5,12 +5,23 @@ import (
 )
 
 type Contact struct {
-	Id string `json:"id"`
-	Name string `json:"name"`
+	ChatId string `json:"chat_id"`
+	Name   string `json:"name"`
 }
 
 func GetContacts(id string) ([]Contact, error) {
-	rows, err := Pool.Query(context.Background(), "select id, username from users where id in (select senderid from contacts where receiverid = $1)", id)
+	var query = `
+		SELECT c.chat_id, u.username FROM contacts AS c
+		INNER JOIN users AS u ON (
+			c.user1 = $1
+			AND c.user2 = u.id
+		)
+		OR (
+		c.user2 = $1
+			AND c.user1 = u.id
+		)`
+
+	rows, err := Pool.Query(context.Background(), query, id)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +31,7 @@ func GetContacts(id string) ([]Contact, error) {
 
 	for rows.Next() {
 		var contact Contact
-		err = rows.Scan(&contact.Id, &contact.Name)
+		err = rows.Scan(&contact.ChatId, &contact.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -28,4 +39,9 @@ func GetContacts(id string) ([]Contact, error) {
 	}
 
 	return contacts, nil
+}
+
+func AddContact(id string, new_id string) error {
+	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, $2)", id, new_id)
+	return err
 }

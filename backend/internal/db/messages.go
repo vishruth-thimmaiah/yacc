@@ -2,16 +2,17 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 type Message struct {
 	Message string `json:"message"`
+	Date    time.Time `json:"date"`
 	Sent    bool   `json:"sent"`
 }
 
-func GetMessages(sender string, id string) ([]Message, error) {
-	query := "(select message, true from messages where senderid = $1 and receiverid = $2) union (select message, false from messages where senderid = $2 and receiverid = $1)"
-	sent, err := Pool.Query(context.Background(), query, sender, id)
+func GetMessages(chat_id string, sender_id string) ([]Message, error) {
+	sent, err := Pool.Query(context.Background(), "select message, date, senderid!=$1 from messages where chat_id = $2", sender_id, chat_id)
 
 	if err != nil {
 		return nil, err
@@ -21,7 +22,7 @@ func GetMessages(sender string, id string) ([]Message, error) {
 
 	for sent.Next() {
 		var message Message
-		err := sent.Scan(&message.Message, &message.Sent)
+		err := sent.Scan(&message.Message, &message.Date, &message.Sent)
 		if err != nil {
 			return nil, err
 		}
@@ -31,7 +32,7 @@ func GetMessages(sender string, id string) ([]Message, error) {
 	return messages, nil
 }
 
-func SendMessage(message string, id string, receiver string) error {
-	_, err := Pool.Exec(context.Background(), `insert into messages(senderid, receiverid, message) values($1, $2, $3)`, id, receiver, message)
+func SendMessage(message string, sender_id string, chat_id string) error {
+	_, err := Pool.Exec(context.Background(), `insert into messages(senderid, chat_id, message) values($1, $2, $3)`, sender_id, chat_id, message)
 	return err
 }

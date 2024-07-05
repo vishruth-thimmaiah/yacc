@@ -19,7 +19,7 @@ const router = createRouter({
 					component: defaults
 				},
 				{
-					path: "/u/:user",
+					path: "/u/:chat",
 					component: messages,
 					props: true
 				}

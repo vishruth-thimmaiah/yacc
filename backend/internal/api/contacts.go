@@ -2,8 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"yacc/backend/internal/db"
 	"net/http"
+	"yacc/backend/internal/db"
 )
 
 func Contacts(w http.ResponseWriter, r *http.Request) {

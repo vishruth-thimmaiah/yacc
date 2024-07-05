@@ -12,12 +12,13 @@ CREATE TABLE session (
 
 CREATE TABLE messages (
 	senderid uuid not null references users(id) on delete cascade,
-	receiverid uuid not null references users(id) on delete cascade,
+	chat_id uuid not null references contacts(chat_id) on delete cascade,
 	message text not null,
-	date timestamp with time zone not null
+	date timestamp with time zone default(now())
 );
 
 CREATE TABLE contacts (
-	senderid uuid not null references users(id) on delete cascade,
-	receiverid uuid not null references users(id) on delete cascade
+    user1 uuid not null references users(id) on delete cascade,
+    user2 uuid not null references users(id) on delete cascade,
+    chat_id uuid default(uuid_generate_v4()) primary key
 );

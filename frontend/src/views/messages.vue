@@ -17,14 +17,14 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute()
 const props = defineProps({
-	user: String
+	chat: String
 })
 const messages = ref<{ message: string, sent: boolean }[]>([])
 
 async function loadMessages() {
 	messages.value = []
 	axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/message", {
-		sender: props.user
+		chat_id: props.chat
 	}).then(function (response) {
 		messages.value = response.data
 	})
@@ -44,7 +44,7 @@ async function submitMessage() {
 	if (newMessage.value && newMessage.value != "") {
 		await axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/send", {
 			message: newMessage.value,
-			receiver: props.user
+			chat_id: props.chat
 		}).then(function (_) {
 			messages.value.push({ message: newMessage.value!, sent: false })
 		})

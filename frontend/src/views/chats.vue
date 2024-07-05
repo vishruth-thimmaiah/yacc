@@ -2,7 +2,7 @@
 	<div class="sidebar">
 		<h1>Contacts</h1>
 		<div class="contacts">
-			<contact v-for="ctc in contacts" :name="ctc.name" :uuid="ctc.id" />
+			<contact v-for="ctc in contacts" :name="ctc.name" :chat="ctc.chat_id" />
 		</div>
 		<div class="options">
 			<i class="fa-solid fa-user fa-fw fa-2xl"></i>
@@ -20,7 +20,7 @@ import contact from '@/components/contact.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 
-const contacts = ref<{ name: string, id: string }[]>([])
+const contacts = ref<{ name: string, chat_id: string }[]>([])
 axios.get((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/contacts").then(function (response) {
 	contacts.value = response.data
 })

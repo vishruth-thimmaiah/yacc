@@ -2,13 +2,12 @@ package api
 
 import (
 	"encoding/json"
-	"yacc/backend/internal/db"
-	"log"
 	"net/http"
+	"yacc/backend/internal/db"
 )
 
 type ShowMessagesRequest struct {
-	Sender string `json:"sender"`
+	Chat_id string `json:"chat_id"`
 }
 
 func LoadMessages(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +29,7 @@ func LoadMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messages, err := db.GetMessages(req.Sender, user_id)
+	messages, err := db.GetMessages(req.Chat_id, user_id)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
@@ -46,7 +45,7 @@ func LoadMessages(w http.ResponseWriter, r *http.Request) {
 
 type SendMessageRequest struct {
 	Message  string `json:"message"`
-	Receiver string `json:"receiver"`
+	ChatId string `json:"chat_id"`
 }
 
 func SendMessage(w http.ResponseWriter, r *http.Request) {
@@ -68,9 +67,8 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.SendMessage(req.Message, user_id, req.Receiver)
+	err = db.SendMessage(req.Message, user_id, req.ChatId)
 	if err != nil {
-		log.Println(err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
