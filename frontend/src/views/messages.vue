@@ -28,7 +28,6 @@ async function loadMessages() {
 	}).then(function (response) {
 		messages.value = response.data
 	})
-
 }
 
 onMounted(async () => {

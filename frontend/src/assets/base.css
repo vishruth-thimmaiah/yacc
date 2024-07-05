@@ -7,3 +7,10 @@
 /* #7FC7D9 */
 /* #6DB9EF */
 /* #3081D0 */
+:root.light {
+	--background-color: #dddddd;
+}
+
+:root.dark {
+	--background-color: #222222;
+}
