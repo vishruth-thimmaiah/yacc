@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink} from 'vue-router';
+import { RouterLink } from 'vue-router';
 
 defineProps({
 	name: String,
@@ -28,5 +28,9 @@ a {
 	&:hover {
 		background-color: #37846847;
 	}
+}
+
+.router-link-active {
+	background-color: #37846889;
 }
 </style>
