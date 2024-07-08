@@ -7,7 +7,7 @@
 			</input>
 			<div class="show-passwd">
 				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
-				<label for="test">Show Password</label>
+				<label for="passwd">Show Password</label>
 			</div>
 			<button>Sign Up</button>
 			<label class="signup">Already have an account? <router-link to="/login">Login</router-link></label>
@@ -52,6 +52,7 @@ const showPasswd = ref(false)
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	color: var(--text-primary-color);
 
 	input:not([type=checkbox]) {
 		border: none;

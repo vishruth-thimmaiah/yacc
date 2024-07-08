@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"yacc/backend/internal/helpers"
-	"log"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -51,7 +50,6 @@ func Signup(email string, passwd string) (string, error) {
 
 	_, err = Pool.Exec(context.Background(), `insert into session(sessionid, id) values($1, (select id from users where email = $2))`, session_id, email)
 	if err != nil {
-		log.Println(err)
 		return "", err
 	}
 

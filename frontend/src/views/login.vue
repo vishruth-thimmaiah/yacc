@@ -1,26 +1,60 @@
 <template>
 	<div class="background">
-		<form class="login-box" method="post" :action="path">
+		<form class="login-box" @submit.prevent="login">
 			<label class="heading">Login</label>
-			<input class="email" name="email" placeholder="email"> </input>
-			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
+			<input class="email" v-model="email" placeholder="email"> </input>
+			<input class="password" v-model="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
 			</input>
 			<div class="show-passwd">
 				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
-				<label for="test">Show Password</label>
+				<label for="passwd">Show Password</label>
 			</div>
+			<a href="/api/auth/google"><i class="fa-brands fa-google"></i></a>
+			<label class="error">{{ error }}</label>
 			<button>Login</button>
 			<label class="signup">Don't have an account? <router-link to="/signup">sign up</router-link> </label>
 			<label class="forgotpasswd">Forgot <router-link to="/forgot">Password</router-link>? </label>
+
 		</form>
+
 	</div>
 </template>
 
 <script setup lang="ts">
+import axios, { AxiosError } from 'axios';
 import { ref } from 'vue';
-const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/user/login'
+import { useRouter } from 'vue-router';
+const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/auth/login'
 
-const showPasswd = ref(false)
+const showPasswd = ref<boolean>(false)
+const error = ref<string>()
+
+const router = useRouter()
+
+const email = ref<string>()
+const passwd = ref<string>()
+async function login() {
+	await axios.post(path, {
+		email: email.value,
+		passwd: passwd.value
+	}).then(function () {
+		router.push("/");
+		error.value = ""
+
+	}).catch(function (res: AxiosError) {
+		switch (res.response?.status) {
+			case 401:
+				error.value = "invalid credentials."
+				break;
+
+			default:
+				error.value = "an error occured."
+				break;
+		}
+	})
+
+}
+
 </script>
 
 <style scoped>
@@ -66,7 +100,7 @@ const showPasswd = ref(false)
 		border-radius: 10px;
 		padding: 10px 5px;
 		width: 10rem;
-		margin: auto 0 2rem 0;
+		margin: 0.5rem 0 2rem 0;
 		background-color: var(--accent-color);
 	}
 
@@ -74,11 +108,17 @@ const showPasswd = ref(false)
 		font-family: "M PLUS Rounded 1c", sans-serif;
 		font-weight: bold;
 		font-size: 14px;
+		color: var(--text-primary-color);
 
 		a {
 			color: var(--accent-color);
 			text-decoration: none;
 		}
+	}
+
+	.error {
+		margin: auto 0 2rem 0;
+		color: red;
 	}
 
 	.email {

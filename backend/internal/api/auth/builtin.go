@@ -1,9 +1,10 @@
-package api
+package auth
 
 import (
+	"encoding/json"
+	"net/http"
 	"yacc/backend/internal/db"
 	"yacc/backend/internal/helpers"
-	"net/http"
 )
 
 type LoginRequest struct {
@@ -13,46 +14,23 @@ type LoginRequest struct {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
-		return
-	}
-	loginDetails := LoginRequest{Email: r.FormValue("email"), Passwd: r.FormValue("passwd")}
+	var req LoginRequest
+	json.NewDecoder(r.Body).Decode(&req)
 
-	if loginDetails.Email == "" || loginDetails.Passwd == "" {
+	if req.Email == "" || req.Passwd == "" {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
-	session_id, err := db.Login(loginDetails.Email, loginDetails.Passwd)
+	session_id, err := db.Login(req.Email, req.Passwd)
 	if err != nil {
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path: "/api"}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, MaxAge: 60 * 60 * 24 * 28, HttpOnly: true, Path: "/api", SameSite: http.SameSiteStrictMode}
 	http.SetCookie(w, cookie)
 
-}
-
-func Logout(w http.ResponseWriter, r *http.Request) {
-
-	session_cookie, err := r.Cookie("session_id")
-
-	if err != nil || session_cookie.Value == "" {
-		http.Error(w, "user not logged in", http.StatusUnauthorized)
-		return
-	}
-
-	err = db.Logout(session_cookie.Name)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	cookie := &http.Cookie{Name: "session_id", Value: "", MaxAge: -1}
-	http.SetCookie(w, cookie)
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +61,24 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path:"/api"}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path: "/api"}
+	http.SetCookie(w, cookie)
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+
+	session_cookie, err := r.Cookie("session_id")
+
+	if err != nil || session_cookie.Value == "" {
+		http.Error(w, "user not logged in", http.StatusUnauthorized)
+		return
+	}
+
+	err = db.Logout(session_cookie.Value)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	cookie := &http.Cookie{Name: "session_id", Value: "", MaxAge: -1, HttpOnly: true, Path: "/api", SameSite: http.SameSiteStrictMode}
 	http.SetCookie(w, cookie)
 }
