@@ -44,7 +44,7 @@ go.work
 .*env
 
 # Bin
-go-msg
+yacc
 
 # Vue
 *.log
