@@ -63,6 +63,7 @@ async function Logout() {
 	margin: 0.5rem;
 	border-radius: 10px;
 	user-select: none;
+	color: var(--text-secondary-color);
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;

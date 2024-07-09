@@ -1,17 +1,9 @@
-/* #ffa096 */
-/* #fc8277 */
-/* #e6665c */
-/* #c04e45 */
-
-/* #AAD7D9 */
-/* #7FC7D9 */
-/* #6DB9EF */
-/* #3081D0 */
 :root.light {
 	--background-color: #eeeeee;
 	--secondary-color: #dddddd;
 	--text-primary-color: #111111;
-	--accent-color: #fc8277;
+	--text-secondary-color: #ffffff;
+	--accent-color: #1A2130;
 	--chat-sent-color: #ffa096;
 	--chat-received-color: #AAD7D9;
 }
@@ -20,7 +12,8 @@
 	--background-color: #222222;
 	--secondary-color: #333333;
 	--text-primary-color: #ffffff;
-	--accent-color: #fc8277;
+	--text-secondary-color: #111111;
+	--accent-color: #83B4FF;
 	--chat-sent-color: #e6665c;
 	--chat-received-color: #6DB9EF;
 }

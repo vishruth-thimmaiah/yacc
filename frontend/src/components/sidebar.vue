@@ -59,6 +59,7 @@ loadContacts()
 	margin: 0.5rem;
 	border-radius: 10px;
 	user-select: none;
+	color: var(--text-secondary-color);
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;
@@ -116,12 +117,12 @@ loadContacts()
 		a {
 			margin: auto 0;
 			margin-right: auto;
-			color: black;
+			color: var(--text-secondary-color);
 		}
 
 		.fa-plus {
 			margin: auto 0;
-			color: black;
+			color: var(--text-secondary-color);
 		}
 	}
 }

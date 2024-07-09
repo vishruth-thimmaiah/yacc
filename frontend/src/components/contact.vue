@@ -15,7 +15,7 @@ defineProps({
 <style scoped>
 a {
 	width: 90%;
-	background-color: #37846824;
+	background-color: color-mix(in srgb, var(--accent-color), #00000060);
 	margin: 10px 0;
 	padding: 10px;
 	border: none;
@@ -23,14 +23,14 @@ a {
 	font-family: "M PLUS Rounded 1c", sans-serif;
 	transition: 300ms background-color;
 	text-decoration: none;
-	color: black;
+	color: var(--text-secondary-color);
 
 	&:hover {
-		background-color: #37846847;
+		background-color: color-mix(in srgb, var(--accent-color), #00000090);
 	}
 }
 
 .router-link-active {
-	background-color: #37846889;
+	background-color: color-mix(in srgb, var(--accent-color), #000000cc);
 }
 </style>
