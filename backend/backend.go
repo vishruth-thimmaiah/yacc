@@ -29,8 +29,9 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/auth/login", auth.Login)
 	http.HandleFunc("/api/auth/google", auth.Google)
 	http.HandleFunc("/api/auth/google/callback", auth.GoogleCb)
-	http.HandleFunc("/api/auth/logout", auth.Logout)
 	http.HandleFunc("/api/auth/signup", auth.Signup)
+	http.HandleFunc("/api/auth/verify", auth.Verify)
+	http.HandleFunc("/api/auth/logout", auth.Logout)
 
 	http.HandleFunc("/api/user/contacts", api.Contacts)
 	http.HandleFunc("/api/user/message", api.LoadMessages)

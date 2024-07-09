@@ -6,6 +6,7 @@ import Chat from '@/views/chats.vue'
 import Messages from '@/views/messages.vue'
 import Defaults from '@/views/default.vue'
 import Settings from '@/views/settings.vue'
+import { getLoggedIn } from '@/middleware'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,9 @@ const router = createRouter({
 			path: '/',
 			component: Chat,
 			name: "home",
+			meta: {
+				requiresAuth: true
+			},
 			children: [
 				{
 					path: "",
@@ -35,6 +39,14 @@ const router = createRouter({
 			}
 		},
 		{
+			path: '/settings',
+			name: 'settings',
+			component: Settings,
+			meta: {
+				requiresAuth: true
+			},
+		},
+		{
 			path: '/login',
 			name: 'login',
 			component: Login
@@ -45,16 +57,20 @@ const router = createRouter({
 			component: Signup
 		},
 		{
-			path: '/settings',
-			name: 'settings',
-			component: Settings
-		},
-		{
 			path: '/:pathMatch(.*)*',
 			component: PageNotFound
 		}
 
 	]
 })
+
+router.beforeEach(async (to) => {
+	if (to.meta.requiresAuth) {
+		const loggedIn = await getLoggedIn()
+		if (!loggedIn) {
+			return { name: "login" };
+		}
+	}
+});
 
 export default router

@@ -1,9 +1,9 @@
 <template>
 	<div class="background">
-		<form class="signup-box" method="post" :action="path">
+		<form class="signup-box" @submit.prevent="signup">
 			<label class="heading">Sign Up</label>
-			<input class="email" name="email" placeholder="email"> </input>
-			<input class="password" name="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
+			<input class="email" v-model="email" placeholder="email"> </input>
+			<input class="password" v-model="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
 			</input>
 			<div class="show-passwd">
 				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
@@ -17,11 +17,41 @@
 </template>
 
 <script setup lang="ts">
-const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/user/signup'
-
+import { setLoggedIn } from '@/middleware';
+import axios, { AxiosError } from 'axios';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/auth/signup'
+const router = useRouter()
 
 const showPasswd = ref(false)
+const error = ref<string>("")
+
+const email = ref<string>()
+const passwd = ref<string>()
+async function signup() {
+	await axios.post(path, {
+		email: email.value,
+		passwd: passwd.value
+	}).then(function () {
+		setLoggedIn(true)
+		router.push("/");
+		error.value = ""
+
+	}).catch(function (res: AxiosError) {
+		switch (res.response?.status) {
+			case 401:
+				error.value = "invalid credentials."
+				break;
+
+			default:
+				error.value = "an error occured."
+				break;
+		}
+	})
+
+}
 </script>
 
 <style scoped>

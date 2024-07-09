@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { setLoggedIn } from '@/middleware';
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -44,6 +45,7 @@ function changeMode() {
 const router = useRouter()
 async function Logout() {
 	await axios.get("/api/auth/logout").then(function () {
+		setLoggedIn(false)
 		router.push("/login")
 	})
 }

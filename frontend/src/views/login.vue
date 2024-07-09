@@ -21,15 +21,17 @@
 </template>
 
 <script setup lang="ts">
+import { setLoggedIn } from '@/middleware';
 import axios, { AxiosError } from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+
 const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/auth/login'
+const router = useRouter()
 
 const showPasswd = ref<boolean>(false)
 const error = ref<string>()
 
-const router = useRouter()
 
 const email = ref<string>()
 const passwd = ref<string>()
@@ -38,6 +40,7 @@ async function login() {
 		email: email.value,
 		passwd: passwd.value
 	}).then(function () {
+		setLoggedIn(true)
 		router.push("/");
 		error.value = ""
 

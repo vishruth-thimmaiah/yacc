@@ -35,33 +35,29 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 func Signup(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, "bad request", http.StatusBadRequest)
-		return
-	}
-	loginDetails := LoginRequest{Email: r.FormValue("email"), Passwd: r.FormValue("passwd")}
+	var req LoginRequest
+	json.NewDecoder(r.Body).Decode(&req)
 
-	if loginDetails.Email == "" || loginDetails.Passwd == "" {
+	if req.Email == "" || req.Passwd == "" {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
-	hash, err := helpers.Hash(loginDetails.Passwd)
+	hash, err := helpers.Hash(req.Passwd)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
-	session_id, err := db.Signup(loginDetails.Email, hash)
+	session_id, err := db.Signup(req.Email, hash)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
-	cookie := &http.Cookie{Name: "session_id", Value: session_id, HttpOnly: true, Path: "/api"}
+	cookie := &http.Cookie{Name: "session_id", Value: session_id, MaxAge: 60 * 60 * 24 * 28, HttpOnly: true, Path: "/api", SameSite: http.SameSiteStrictMode}
 	http.SetCookie(w, cookie)
 }
 
@@ -81,4 +77,18 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	}
 	cookie := &http.Cookie{Name: "session_id", Value: "", MaxAge: -1, HttpOnly: true, Path: "/api", SameSite: http.SameSiteStrictMode}
 	http.SetCookie(w, cookie)
+}
+
+func Verify(w http.ResponseWriter, r *http.Request) {
+	session, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	_, err = db.SessionInfo(session.Value)
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
 }
