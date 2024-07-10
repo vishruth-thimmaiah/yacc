@@ -11,7 +11,6 @@ if (theme && theme != "system") {
 } else {
 	document.documentElement.className = (window.matchMedia("(prefers-color-scheme: dark)").matches) ? 'dark' : 'light'
 }
-
 </script>
 
 

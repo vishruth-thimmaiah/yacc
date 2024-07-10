@@ -2,8 +2,11 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"yacc/backend/internal/db"
+
+	"github.com/gorilla/websocket"
 )
 
 type ShowMessagesRequest struct {
@@ -44,16 +47,19 @@ func LoadMessages(w http.ResponseWriter, r *http.Request) {
 }
 
 type SendMessageRequest struct {
-	Message  string `json:"message"`
-	ChatId string `json:"chat_id"`
+	Message string `json:"message"`
+	ChatId  string `json:"chat_id"`
 }
 
-func SendMessage(w http.ResponseWriter, r *http.Request) {
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
-	var req SendMessageRequest
-	json.NewDecoder(r.Body).Decode(&req)
-
-	w.Header().Add("Content-type", "application/json")
+func Messages(w http.ResponseWriter, r *http.Request) {
 
 	session, err := r.Cookie("session_id")
 	if err != nil {
@@ -67,9 +73,33 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.SendMessage(req.Message, user_id, req.ChatId)
+	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
+	defer c.Close()
+
+	for {
+		mt, message, err := c.ReadMessage()
+		if err != nil {
+			break
+		}
+
+		var msg SendMessageRequest
+		json.Unmarshal(message, &msg)
+
+		saveMessage(msg.ChatId, user_id, msg.Message)
+
+		err = c.WriteMessage(mt, []byte("etst"))
+		if err != nil {
+			log.Println("write:", err)
+			break
+		}
+	}
+}
+
+func saveMessage(chat_id string, user_id string, message string) error {
+	err := db.SendMessage(message, user_id, chat_id)
+	return err
+
 }

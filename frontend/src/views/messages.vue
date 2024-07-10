@@ -14,6 +14,7 @@ import message from '@/components/message.vue';
 import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { Send } from "@/api/messages"
 
 const route = useRoute()
 const props = defineProps({
@@ -41,16 +42,13 @@ watch(() => route.params, async function () {
 const newMessage = ref<string>()
 async function submitMessage() {
 	if (newMessage.value && newMessage.value != "") {
-		await axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/send", {
-			message: newMessage.value,
-			chat_id: props.chat
-		}).then(function (_) {
-			messages.value.push({ message: newMessage.value!, sent: false })
-		})
+		Send(props.chat!, newMessage.value)
+		messages.value.push({ message: newMessage.value, sent: false })
 		newMessage.value = ""
 	}
 
 }
+
 </script>
 
 <style scoped>

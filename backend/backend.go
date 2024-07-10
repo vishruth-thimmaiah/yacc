@@ -36,8 +36,9 @@ func Start(conn *pgxpool.Pool) {
 
 	http.HandleFunc("/api/user/contacts", api.Contacts)
 	http.HandleFunc("/api/user/message", api.LoadMessages)
-	http.HandleFunc("/api/send", api.SendMessage)
 	http.HandleFunc("/api/addcontact", api.NewContact)
+
+	http.HandleFunc("/api/messages", api.Messages)
 
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),
