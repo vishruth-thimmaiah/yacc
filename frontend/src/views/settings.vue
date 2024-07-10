@@ -84,6 +84,7 @@ async function Logout() {
 	top: 0;
 	bottom: 0;
 	right: 0.5rem;
+	user-select: none;
 
 	h3 {
 		font-family: "Playwrite DE Grund", cursive;
@@ -97,7 +98,6 @@ async function Logout() {
 		font-size: 15px;
 
 		label {
-			user-select: none;
 			display: inline-block;
 			width: 60%;
 		}
@@ -119,7 +119,6 @@ async function Logout() {
 		font-size: 15px;
 
 		label {
-			user-select: none;
 			display: inline-block;
 			width: 60%;
 		}

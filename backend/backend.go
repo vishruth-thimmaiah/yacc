@@ -17,6 +17,7 @@ func Start(conn *pgxpool.Pool) {
 	port := cmp.Or(os.Getenv("PORT"), "3000")
 	db.Setup(conn)
 	auth.GOauth()
+
 	// Frontend
 	fs := http.FileServer(http.Dir("frontend/dist"))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

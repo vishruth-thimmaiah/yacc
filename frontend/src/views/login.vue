@@ -105,6 +105,7 @@ async function login() {
 		width: 10rem;
 		margin: 0.5rem 0 2rem 0;
 		background-color: var(--accent-color);
+		color: var(--text-secondary-color);
 	}
 
 	label {

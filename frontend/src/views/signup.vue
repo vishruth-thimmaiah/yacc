@@ -100,6 +100,7 @@ async function signup() {
 		width: 10rem;
 		margin: auto 0 2rem 0;
 		background-color: var(--accent-color);
+		color: var(--text-secondary-color);
 	}
 
 	label {
