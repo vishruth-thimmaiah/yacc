@@ -46,11 +46,6 @@ func LoadMessages(w http.ResponseWriter, r *http.Request) {
 
 }
 
-type SendMessageRequest struct {
-	Message string `json:"message"`
-	ChatId  string `json:"chat_id"`
-}
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,

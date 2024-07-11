@@ -18,5 +18,6 @@ import sidebar from '@/components/sidebar.vue';
 	bottom: 0;
 	right: 0.5rem;
 	overflow-y: scroll;
+	padding-bottom: 4rem;
 }
 </style>

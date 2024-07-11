@@ -52,7 +52,9 @@ const r = Receive()
 
 r.addEventListener('message', function (event) {
 	const response = JSON.parse(event.data)
-	messages.value.push({ message: response.message, sent: true })
+	if (response.chat_id === props.chat!) {
+		messages.value.push({ message: response.message, sent: true })
+	}
 })
 
 </script>

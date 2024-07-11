@@ -25,7 +25,9 @@ func (c *Client) read() {
 	for {
 		_, response, err := c.conn.ReadMessage()
 		if err != nil {
-			log.Println(err)
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("error: %v", err)
+			}
 			break
 		}
 
@@ -40,6 +42,12 @@ func (c *Client) read() {
 }
 
 func (c *Client) write() {
+
+	defer func() {
+		c.hub.unregister <- c
+		c.conn.Close()
+	}()
+
 	for {
 		select {
 		case message := <-c.sent:
@@ -47,10 +55,11 @@ func (c *Client) write() {
 			if err != nil {
 				continue
 			}
-			log.Println(string(response))
 			err = c.conn.WriteMessage(websocket.TextMessage, response)
 			if err != nil {
-				log.Println(err)
+				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+					log.Printf("error: %v", err)
+				}
 				break
 			}
 		}
