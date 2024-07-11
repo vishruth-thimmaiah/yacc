@@ -1,9 +1,9 @@
-package api
+package messages
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
+	"time"
 	"yacc/backend/internal/db"
 
 	"github.com/gorilla/websocket"
@@ -54,12 +54,21 @@ type SendMessageRequest struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+
+	// TODO to be removed
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
 
-func Messages(w http.ResponseWriter, r *http.Request) {
+type Message struct {
+	Chat_id     string    `json:"chat_id"`
+	Receiver_id string    `json:"sender_id"`
+	Date        time.Time `json:"date"`
+	Message     string    `json:"message"`
+}
+
+func Messages(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	session, err := r.Cookie("session_id")
 	if err != nil {
@@ -77,29 +86,11 @@ func Messages(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	defer c.Close()
 
-	for {
-		mt, message, err := c.ReadMessage()
-		if err != nil {
-			break
-		}
+	client := Client{user_id: user_id, conn: c, hub: hub, sent: make(chan Message)}
 
-		var msg SendMessageRequest
-		json.Unmarshal(message, &msg)
+	hub.register <- &client
 
-		saveMessage(msg.ChatId, user_id, msg.Message)
-
-		err = c.WriteMessage(mt, []byte("etst"))
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
-}
-
-func saveMessage(chat_id string, user_id string, message string) error {
-	err := db.SendMessage(message, user_id, chat_id)
-	return err
-
+	go client.read()
+	go client.write()
 }

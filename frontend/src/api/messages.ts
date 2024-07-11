@@ -8,3 +8,8 @@ export function Send(target: string, message: string) {
 		}))
 	}
 }
+
+export function Receive(): WebSocket {
+	return socket
+}
+

@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"log"
 )
 
 type Contact struct {
@@ -44,4 +45,22 @@ func GetContacts(id string) ([]Contact, error) {
 func AddContact(id string, new_email string) error {
 	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, (select id from users where email=$2))", id, new_email)
 	return err
+}
+
+func GetReceipient(chat_id string, sender_id string) string {
+	var query = `select case
+			when user1 = $1 then user2
+			when user2 = $1 then user1
+		end
+		from contacts
+		where chat_id =$2
+		limit 1`
+
+	var receipient string
+	err := Pool.QueryRow(context.Background(), query, sender_id, chat_id).Scan(&receipient)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return receipient
 }

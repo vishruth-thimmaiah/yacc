@@ -7,6 +7,7 @@ import (
 	"os"
 	"yacc/backend/internal/api"
 	"yacc/backend/internal/api/auth"
+	"yacc/backend/internal/api/messages"
 	"yacc/backend/internal/db"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -27,6 +28,10 @@ func Start(conn *pgxpool.Pool) {
 	http.Handle("/assets/", fs)
 
 	// Backend
+
+	hub := messages.CreateHub()
+	go hub.Run()
+
 	http.HandleFunc("/api/auth/login", auth.Login)
 	http.HandleFunc("/api/auth/google", auth.Google)
 	http.HandleFunc("/api/auth/google/callback", auth.GoogleCb)
@@ -35,10 +40,12 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/auth/logout", auth.Logout)
 
 	http.HandleFunc("/api/user/contacts", api.Contacts)
-	http.HandleFunc("/api/user/message", api.LoadMessages)
+	http.HandleFunc("/api/user/message", messages.LoadMessages)
 	http.HandleFunc("/api/addcontact", api.NewContact)
 
-	http.HandleFunc("/api/messages", api.Messages)
+	http.HandleFunc("/api/messages", func(w http.ResponseWriter, r *http.Request) {
+		messages.Messages(hub, w, r)
+	})
 
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),

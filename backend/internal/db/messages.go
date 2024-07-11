@@ -32,7 +32,7 @@ func GetMessages(chat_id string, sender_id string) ([]Message, error) {
 	return messages, nil
 }
 
-func SendMessage(message string, sender_id string, chat_id string) error {
+func SaveMessage(message string, sender_id string, chat_id string) error {
 	_, err := Pool.Exec(context.Background(), `insert into messages(senderid, chat_id, message) values($1, $2, $3)`, sender_id, chat_id, message)
 	return err
 }
