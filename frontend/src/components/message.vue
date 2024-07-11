@@ -1,14 +1,51 @@
 <template>
 	<div :class="sending ? 'receiving' : 'sending'">
-		<label>{{ message }}</label>
+		<label class="message">{{ message }}</label>
+		<label class="date">{{ cleanDate }}</label>
 	</div>
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { ref } from 'vue';
+
+const SEC = 1000
+const MIN = 60 * SEC
+const HRS = 60 * MIN
+const DAYS = HRS * 24
+
+const props = defineProps({
 	message: String,
+	date: [String, Number],
 	sending: Boolean
 })
+
+const cleanDate = ref<string>("")
+const diff = Date.now() - Date.parse(props.date!.toString())
+
+let days = Math.floor(diff / DAYS)
+let hrs = Math.floor((diff % DAYS) / HRS)
+let min = Math.floor((diff % HRS) / MIN)
+let sec = Math.floor((diff % MIN) / SEC)
+
+switch (true) {
+	case days > 0:
+		cleanDate.value = days + "Days ago."
+		break;
+	case hrs > 0:
+		cleanDate.value = hrs + "hrs ago."
+		break;
+	case min > 0:
+		cleanDate.value = min + "min ago."
+		break;
+	case sec > 0:
+		cleanDate.value = sec + "sec ago."
+		break;
+	default:
+		cleanDate.value = "a few moments ago."
+		break;
+}
+
+
 </script>
 
 <style scoped>
@@ -18,7 +55,8 @@ defineProps({
 	font-size: 15px;
 	font-weight: bold;
 	margin: 2rem 1rem;
-	padding: 2rem;
+	display: flex;
+	flex-direction: column;
 }
 
 .sending {
@@ -31,5 +69,17 @@ defineProps({
 	background-color: var(--chat-sent-color);
 	border-radius: 0px 10px 10px 10px;
 	margin-right: 4rem;
+}
+
+.message {
+	padding-bottom: 1rem;
+	padding: 2rem;
+}
+
+.date {
+	font-size: 10px;
+	padding: 0.5rem;
+	padding-top: 0;
+	color: #222222;
 }
 </style>

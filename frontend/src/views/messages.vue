@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent"></message>
+		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent" :date="msg.date"></message>
 	</div>
 
 	<form @submit.prevent="submitMessage" class="new-message">
@@ -20,7 +20,7 @@ const route = useRoute()
 const props = defineProps({
 	chat: String
 })
-const messages = ref<{ message: string, sent: boolean }[]>([])
+const messages = ref<{ message: string, sent: boolean, date: string | number }[]>([])
 
 async function loadMessages() {
 	messages.value = []
@@ -43,7 +43,7 @@ const newMessage = ref<string>()
 function submitMessage() {
 	if (newMessage.value && newMessage.value != "") {
 		Send(props.chat!, newMessage.value)
-		messages.value.push({ message: newMessage.value, sent: false })
+		messages.value.push({ message: newMessage.value, sent: false, date: Date.now() })
 		newMessage.value = ""
 	}
 }
@@ -53,7 +53,7 @@ const r = Receive()
 r.addEventListener('message', function (event) {
 	const response = JSON.parse(event.data)
 	if (response.chat_id === props.chat!) {
-		messages.value.push({ message: response.message, sent: true })
+		messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date) })
 	}
 })
 

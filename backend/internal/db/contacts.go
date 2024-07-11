@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"log"
 )
 
 type Contact struct {
@@ -59,7 +58,6 @@ func GetReceipient(chat_id string, sender_id string) string {
 	var receipient string
 	err := Pool.QueryRow(context.Background(), query, sender_id, chat_id).Scan(&receipient)
 	if err != nil {
-		log.Println(err)
 		return ""
 	}
 	return receipient
