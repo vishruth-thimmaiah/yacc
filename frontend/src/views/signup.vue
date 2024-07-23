@@ -5,6 +5,8 @@
 			<input class="email" v-model="email" placeholder="email"> </input>
 			<input class="password" v-model="passwd" :type="showPasswd ? 'text' : 'password'" placeholder="password">
 			</input>
+			<input class="password-verify" v-model="passwdVerify" type='password' placeholder="password again">
+			</input>
 			<div class="show-passwd">
 				<input type="checkbox" id="passwd" v-model="showPasswd"></input>
 				<label for="passwd">Show Password</label>
@@ -30,26 +32,30 @@ const error = ref<string>("")
 
 const email = ref<string>()
 const passwd = ref<string>()
+const passwdVerify = ref<string>()
 async function signup() {
-	await axios.post(path, {
-		email: email.value,
-		passwd: passwd.value
-	}).then(function () {
-		setLoggedIn(true)
-		router.push("/");
-		error.value = ""
+	if (passwdVerify.value == passwd.value) {
 
-	}).catch(function (res: AxiosError) {
-		switch (res.response?.status) {
-			case 401:
-				error.value = "invalid credentials."
-				break;
+		await axios.post(path, {
+			email: email.value,
+			passwd: passwd.value
+		}).then(function () {
+			setLoggedIn(true)
+			router.push("/");
+			error.value = ""
 
-			default:
-				error.value = "an error occured."
-				break;
-		}
-	})
+		}).catch(function (res: AxiosError) {
+			switch (res.response?.status) {
+				case 401:
+					error.value = "invalid credentials."
+					break;
+
+				default:
+					error.value = "an error occured."
+					break;
+			}
+		})
+	}
 
 }
 </script>
@@ -116,6 +122,11 @@ async function signup() {
 
 	.email {
 		margin: 1rem;
+	}
+
+	.password,
+	.password-verify {
+		margin: 0.5rem 1rem;
 	}
 
 	.show-passwd {
