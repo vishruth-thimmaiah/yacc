@@ -29,10 +29,10 @@ let sec = Math.floor((diff % MIN) / SEC)
 
 switch (true) {
 	case days > 0:
-		cleanDate.value = days + "Days ago."
+		cleanDate.value = days + (days == 1 ? "day" : "days") + " ago."
 		break;
 	case hrs > 0:
-		cleanDate.value = hrs + "hrs ago."
+		cleanDate.value = hrs + (hrs == 1 ? "hr" : "hrs") + " ago."
 		break;
 	case min > 0:
 		cleanDate.value = min + "min ago."
