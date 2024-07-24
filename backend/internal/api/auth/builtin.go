@@ -50,10 +50,14 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session_id, err := db.Signup(req.Email, hash)
+	session_id, pgerr := db.Signup(req.Email, hash)
 
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+	if pgerr != nil {
+		if pgerr.Code == "23505" {
+			http.Error(w, "user already exists", http.StatusConflict)
+		} else {
+			http.Error(w, "internal error", http.StatusInternalServerError)
+		}
 		return
 	}
 

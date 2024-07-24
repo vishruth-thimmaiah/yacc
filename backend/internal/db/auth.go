@@ -6,6 +6,7 @@ import (
 	"yacc/backend/internal/helpers"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -39,21 +40,24 @@ func Login(email string, passwd string) (string, error) {
 	return session_id.String(), err
 }
 
-func Signup(email string, passwd string) (string, error) {
-	_, err := Pool.Exec(context.Background(), `insert into users(email, passwd) values($1, $2)`, email, passwd)
+func Signup(email string, passwd string) (string, *pgconn.PgError) {
+	_, err := Pool.Exec(context.Background(), `insert into users(email, passwd, username) values($1, $2, $3)`, email, passwd, helpers.RandUsername())
 	if err != nil {
-		println(err)
-		return "", err
+		var pgErr *pgconn.PgError
+		errors.As(err, &pgErr)
+		return "", pgErr
 	}
 
 	session_id := uuid.New()
 
 	_, err = Pool.Exec(context.Background(), `insert into session(sessionid, id) values($1, (select id from users where email = $2))`, session_id, email)
 	if err != nil {
-		return "", err
+		var pgErr *pgconn.PgError
+		errors.As(err, &pgErr)
+		return "", pgErr
 	}
 
-	return session_id.String(), err
+	return session_id.String(), nil
 }
 
 func SessionInfo(session_id string) (string, error) {
@@ -69,4 +73,4 @@ func SessionInfo(session_id string) (string, error) {
 func Logout(session_id string) error {
 	_, err := Pool.Exec(context.Background(), `delete from session where sessionid = $1`, session_id)
 	return err
-} 
+}

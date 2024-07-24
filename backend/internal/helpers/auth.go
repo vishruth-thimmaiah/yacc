@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"encoding/base64"
+	math_rand "math/rand"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -40,4 +41,14 @@ func VerifyHash(passwd string, hash string) bool {
 	}
 
 	return false
+}
+
+const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func RandUsername() string {
+	result := make([]byte, 20)
+	for i := range result {
+		result[i] = letters[math_rand.Intn(len(letters))]
+	}
+	return string(result)
 }

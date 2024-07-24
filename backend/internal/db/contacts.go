@@ -42,7 +42,7 @@ func GetContacts(id string) ([]Contact, error) {
 }
 
 func AddContact(id string, new_email string) error {
-	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, (select id from users where email=$2))", id, new_email)
+	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, (select id from users where email=$2 limit 1))", id, new_email)
 	return err
 }
 
