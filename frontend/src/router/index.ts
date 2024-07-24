@@ -6,6 +6,9 @@ import Chat from '@/views/chats.vue'
 import Messages from '@/views/messages.vue'
 import Defaults from '@/views/default.vue'
 import Settings from '@/views/settings.vue'
+import General from '@/views/settings/general.vue'
+import Account from '@/views/settings/account.vue'
+import Username from '@/views/settings/username.vue'
 import { getLoggedIn } from '@/middleware'
 
 const router = createRouter({
@@ -45,6 +48,20 @@ const router = createRouter({
 			meta: {
 				requiresAuth: true
 			},
+			children: [
+				{
+					path: "general",
+					component: General
+				},
+				{
+					path: "username",
+					component: Username
+				},
+				{
+					path: "account",
+					component: Account
+				}
+			]
 		},
 		{
 			path: '/login',
