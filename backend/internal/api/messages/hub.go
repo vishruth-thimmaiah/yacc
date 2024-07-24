@@ -40,7 +40,7 @@ func (h *Hub) Run() {
 		case message := <-h.message:
 			for client_index := range h.clients {
 				if h.clients[client_index].user_id == message.Receiver_id {
-					h.clients[client_index].sent <- message
+					go h.clients[client_index].Write(message)
 					break
 				}
 			}

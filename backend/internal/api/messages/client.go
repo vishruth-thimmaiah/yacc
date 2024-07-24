@@ -41,27 +41,17 @@ func (c *Client) read() {
 	}
 }
 
-func (c *Client) write() {
+func (c *Client) Write(message Message) {
 
-	defer func() {
-		c.hub.unregister <- c
-		c.conn.Close()
-	}()
-
-	for {
-		select {
-		case message := <-c.sent:
-			response, err := json.Marshal(message)
-			if err != nil {
-				continue
-			}
-			err = c.conn.WriteMessage(websocket.TextMessage, response)
-			if err != nil {
-				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-					log.Printf("error: %v", err)
-				}
-				break
-			}
+	response, err := json.Marshal(message)
+	if err != nil {
+		return
+	}
+	err = c.conn.WriteMessage(websocket.TextMessage, response)
+	if err != nil {
+		if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+			log.Printf("error: %v", err)
 		}
+		return
 	}
 }

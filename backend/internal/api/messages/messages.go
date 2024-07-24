@@ -58,7 +58,7 @@ var upgrader = websocket.Upgrader{
 
 type Message struct {
 	Chat_id     string    `json:"chat_id"`
-	Receiver_id string    `json:"sender_id"`
+	Receiver_id string    `json:"-"`
 	Date        time.Time `json:"date"`
 	Message     string    `json:"message"`
 }
@@ -87,5 +87,4 @@ func Messages(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	hub.register <- &client
 
 	go client.read()
-	go client.write()
 }
