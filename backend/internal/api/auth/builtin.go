@@ -50,7 +50,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session_id, pgerr := db.Signup(req.Email, hash)
+	session_id, pgerr := db.Signup(req.Email, hash, helpers.RandUsername())
 
 	if pgerr != nil {
 		if pgerr.Code == "23505" {
@@ -90,7 +90,7 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = db.SessionInfo(session.Value)
+	_, err = db.UserInfo(session.Value)
 	if err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
@@ -112,7 +112,7 @@ func ChangeUsername(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := db.SessionInfo(session.Value)
+	user_id, err := db.UserInfo(session.Value)
 	if err != nil {
 		return
 	}

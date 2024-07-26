@@ -26,7 +26,7 @@ func LoadMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := db.SessionInfo(session.Value)
+	user_id, err := db.UserInfo(session.Value)
 	if err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
@@ -71,7 +71,7 @@ func Messages(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := db.SessionInfo(session.Value)
+	user_id, err := db.UserInfo(session.Value)
 	if err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return

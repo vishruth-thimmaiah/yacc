@@ -20,7 +20,7 @@ func Contacts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := db.SessionInfo(session.Value)
+	user_id, err := db.UserInfo(session.Value)
 	if err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
@@ -56,7 +56,7 @@ func NewContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, err := db.SessionInfo(session.Value)
+	user_id, err := db.UserInfo(session.Value)
 	if err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return

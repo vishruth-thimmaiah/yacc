@@ -18,21 +18,21 @@ func Setup(pool *pgxpool.Pool) {
 
 func Login(email string, passwd string) (string, error) {
 
-	var passwdHash, id string
+	var hashed_passwd, user_id string
 
-	err := Pool.QueryRow(context.Background(), `select passwd,id from users where email = $1 limit 1`, email).Scan(&passwdHash, &id)
+	err := Pool.QueryRow(context.Background(), `select passwd,id from users where email = $1 limit 1`, email).Scan(&hashed_passwd, &user_id)
 	if err != nil {
 		return "", err
 	}
 
-	ok := helpers.VerifyHash(passwd, passwdHash)
+	ok := helpers.VerifyHash(passwd, hashed_passwd)
 	if !ok {
 		return "", errors.New("Password is invalid")
 	}
 
 	session_id := uuid.New()
 
-	_, err = Pool.Exec(context.Background(), `insert into session(sessionid, id) values($1, $2)`, session_id, id)
+	_, err = Pool.Exec(context.Background(), `insert into session(sessionid, id) values($1, $2)`, session_id, user_id)
 	if err != nil {
 		return "", err
 	}
@@ -40,8 +40,8 @@ func Login(email string, passwd string) (string, error) {
 	return session_id.String(), err
 }
 
-func Signup(email string, passwd string) (string, *pgconn.PgError) {
-	_, err := Pool.Exec(context.Background(), `insert into users(email, passwd, username) values($1, $2, $3)`, email, passwd, helpers.RandUsername())
+func Signup(email string, passwd string, username string) (string, *pgconn.PgError) {
+	_, err := Pool.Exec(context.Background(), `insert into users(email, passwd, username) values($1, $2, $3)`, email, passwd, username)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		errors.As(err, &pgErr)
@@ -60,14 +60,14 @@ func Signup(email string, passwd string) (string, *pgconn.PgError) {
 	return session_id.String(), nil
 }
 
-func SessionInfo(session_id string) (string, error) {
-	var id string
-	err := Pool.QueryRow(context.Background(), `select id from session where sessionid = $1 limit 1`, session_id).Scan(&id)
+func UserInfo(session_id string) (string, error) {
+	var user_id string
+	err := Pool.QueryRow(context.Background(), `select id from session where sessionid = $1 limit 1`, session_id).Scan(&user_id)
 	if err != nil {
 		return "", err
 	}
 
-	return id, err
+	return user_id, err
 }
 
 func Logout(session_id string) error {
