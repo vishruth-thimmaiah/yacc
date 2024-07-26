@@ -97,4 +97,10 @@ r.addEventListener('message', function (event) {
 		}
 	}
 }
+
+@media screen and (max-width: 800px) {
+	.new-message {
+		left: 0;
+	}
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<sidebar></sidebar>
+	<sidebar />
 	<div class="messages">
 		<RouterView />
 	</div>
@@ -10,7 +10,6 @@ import sidebar from '@/components/sidebar.vue';
 </script>
 
 <style scoped>
-
 .messages {
 	position: fixed;
 	left: clamp(26%, 21rem, 21rem);
@@ -19,5 +18,15 @@ import sidebar from '@/components/sidebar.vue';
 	right: 0.5rem;
 	overflow-y: scroll;
 	padding-bottom: 4rem;
+}
+
+@media screen and (max-width: 800px) {
+	.sidebar {
+		visibility: hidden;
+	}
+
+	.messages {
+		left: 0;
+	}
 }
 </style>
