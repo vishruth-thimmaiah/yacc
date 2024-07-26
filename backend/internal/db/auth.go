@@ -74,3 +74,8 @@ func Logout(session_id string) error {
 	_, err := Pool.Exec(context.Background(), `delete from session where sessionid = $1`, session_id)
 	return err
 }
+
+func ChangeUsername(username string, user_id string) error {
+	_, err := Pool.Exec(context.Background(),`update users set username=$1 where id=$2`, username, user_id)
+	return err
+}

@@ -96,3 +96,26 @@ func Verify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+type NewUsername struct {
+	Username string `json:"username"`
+}
+
+func ChangeUsername(w http.ResponseWriter, r *http.Request) {
+
+	var username NewUsername
+	json.NewDecoder(r.Body).Decode(&username)
+
+	session, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	user_id, err := db.SessionInfo(session.Value)
+	if err != nil {
+		return
+	}
+
+	db.ChangeUsername(username.Username, user_id)
+}

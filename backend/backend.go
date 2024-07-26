@@ -38,6 +38,7 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/auth/signup", auth.Signup)
 	http.HandleFunc("/api/auth/verify", auth.Verify)
 	http.HandleFunc("/api/auth/logout", auth.Logout)
+	http.HandleFunc("/api/auth/username", auth.ChangeUsername)
 
 	http.HandleFunc("/api/user/contacts", api.Contacts)
 	http.HandleFunc("/api/user/message", messages.LoadMessages)
