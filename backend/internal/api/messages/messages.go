@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	"yacc/backend/internal/db"
+	"yacc/backend/internal/s3"
 
 	"github.com/gorilla/websocket"
 )
@@ -61,6 +62,11 @@ type Message struct {
 	Receiver_id string    `json:"-"`
 	Date        time.Time `json:"date"`
 	Message     string    `json:"message"`
+	Attachment_url string `json:"attachment"`
+}
+
+type Attachment struct {
+	Url string `json:"url"`
 }
 
 func Messages(hub *Hub, w http.ResponseWriter, r *http.Request) {
@@ -82,9 +88,36 @@ func Messages(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := Client{user_id: user_id, conn: c, hub: hub, sent: make(chan Message)}
+	client := Client{user_id: user_id, conn: c, hub: hub}
 
 	hub.register <- &client
 
 	go client.read()
+}
+
+func Attachments(w http.ResponseWriter, r *http.Request) {
+
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "error reading file", http.StatusInternalServerError)
+		return
+	}
+
+	file, header, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, "error reading file", http.StatusInternalServerError)
+		return
+	}
+
+	defer file.Close()
+
+	var attachment Attachment
+
+	attachment.Url, err = bucket.Upload(file, header)
+
+	err = json.NewEncoder(w).Encode(&attachment)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -27,7 +27,7 @@ func main() {
 
 	pool, err := pgxpool.New(context.Background(), os.Getenv("POSTGRES_URL"))
 	if err != nil {
-		log.Fatal("Unable to connect to db")
+		log.Fatal("Unable to connect to db:", err)
 	}
 
 	defer pool.Close()

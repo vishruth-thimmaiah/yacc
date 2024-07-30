@@ -9,6 +9,7 @@ import (
 	"yacc/backend/internal/api/auth"
 	"yacc/backend/internal/api/messages"
 	"yacc/backend/internal/db"
+	"yacc/backend/internal/s3"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -17,6 +18,7 @@ func Start(conn *pgxpool.Pool) {
 
 	port := cmp.Or(os.Getenv("PORT"), "3000")
 	db.Setup(conn)
+	bucket.Setup()
 	auth.GOauth()
 
 	// Frontend
@@ -47,6 +49,7 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/messages", func(w http.ResponseWriter, r *http.Request) {
 		messages.Messages(hub, w, r)
 	})
+	http.HandleFunc("/api/messages/upload", messages.Attachments)
 
 	log.Panic(
 		http.ListenAndServe(":"+port, nil),

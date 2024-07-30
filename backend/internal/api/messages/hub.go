@@ -31,7 +31,6 @@ func (h *Hub) Run() {
 			for client_index := range h.clients {
 				if h.clients[client_index] == client {
 					h.clients = append(h.clients[:client_index], h.clients[client_index+1:]...)
-					close(client.sent)
 					break
 				}
 			}

@@ -12,7 +12,6 @@ type Client struct {
 	hub     *Hub
 	user_id string
 	conn    *websocket.Conn
-	sent    chan Message
 }
 
 func (c *Client) read() {
@@ -37,7 +36,7 @@ func (c *Client) read() {
 
 		c.hub.message <- message
 
-		db.SaveMessage(message.Message, c.user_id, message.Chat_id)
+		db.SaveMessage(message.Message, c.user_id, message.Chat_id, message.Attachment_url)
 	}
 }
 
