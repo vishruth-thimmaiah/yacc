@@ -1,5 +1,5 @@
 <template>
-	<div class="sidebar">
+	<div id="sidebar" class="sidebar">
 		<h1>Contacts</h1>
 		<div class="contacts">
 			<contact v-for="ctc in contacts" :name="ctc.name" :chat="ctc.chat_id" />
@@ -60,6 +60,7 @@ loadContacts()
 	border-radius: 10px;
 	user-select: none;
 	color: var(--text-secondary-color);
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
 	h1 {
 		font-family: "Playwrite DE Grund", cursive;

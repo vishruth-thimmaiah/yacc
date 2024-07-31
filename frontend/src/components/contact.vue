@@ -1,14 +1,27 @@
 <template>
-	<RouterLink :to="'/u/' + chat"> {{ name }} </RouterLink>
+	<RouterLink @click="updateTopbar" :to="'/u/' + chat"> {{ name }} </RouterLink>
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { inject, type Ref } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
 
-defineProps({
+const props = defineProps({
 	name: String,
 	chat: String
 });
+
+const contact: Ref = inject('chat_name')!
+
+const r = useRoute()
+console.log(r.path, `/u/${props.chat}`)
+if (r.path === `/u/${props.chat}`) {
+	contact.value = props.name
+}
+
+function updateTopbar() {
+	contact.value = props.name
+}
 
 </script>
 

@@ -8,8 +8,8 @@
 		<input placeholder="send something" v-model="newMessage"></input>
 		<input :disabled="attachmentUrl != ''" accept="image/*" @change="attachFile($event)" id="file"
 			class="file-upload-input" type="file" />
-		<label for="file">
-			<i :class="'fa-solid fa-paperclip ' + (attachmentUrl != '' ? 'disabled' : '')"></i>
+		<label :class="'upload ' + (attachmentUrl != '' ? 'disabled' : '')" for="file">
+			<i class="fa-solid fa-paperclip"></i>
 		</label>
 		<button><i class="fa-solid fa-reply fa-rotate-180 fa-fw"></i></button>
 	</form>
@@ -85,13 +85,13 @@ r.addEventListener('message', function (event) {
 .new-message {
 	position: fixed;
 	bottom: 0;
-	right: 0;
-	left: clamp(25%, 20rem, 20rem);
+	right: 0.5rem;
+	left: clamp(26%, 21rem, 21rem);
 	margin: 1rem auto;
-	width: max-content;
 	border-radius: 10px;
 	padding: 10px;
 	background: var(--secondary-color);
+	display: flex;
 
 	input {
 		font-family: "M PLUS Rounded 1c", sans-serif;
@@ -112,9 +112,10 @@ r.addEventListener('message', function (event) {
 		display: none;
 	}
 
-	.fa-paperclip {
+	.upload {
 		color: var(--text-primary-color);
 		margin: 0 8px;
+		margin-left: auto;
 
 		&.disabled {
 			color: grey;
@@ -135,7 +136,7 @@ r.addEventListener('message', function (event) {
 
 @media screen and (max-width: 800px) {
 	.new-message {
-		left: 0;
+		left: 0.5rem;
 	}
 }
 </style>
