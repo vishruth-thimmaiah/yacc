@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 )
 
 type Contact struct {
@@ -17,7 +18,7 @@ func GetContacts(id string) ([]Contact, error) {
 			AND c.user2 = u.id
 		)
 		OR (
-		c.user2 = $1
+			c.user2 = $1
 			AND c.user1 = u.id
 		)`
 
@@ -42,7 +43,20 @@ func GetContacts(id string) ([]Contact, error) {
 }
 
 func AddContact(id string, new_email string) error {
-	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, (select id from users where email=$2 limit 1))", id, new_email)
+	var user_1, user_2 string
+	Pool.QueryRow(context.Background(), `select id from users where email=$1 limit 1`, new_email).Scan(&user_2)
+
+	if id == user_2 {
+		return errors.New("duplicate values")
+	}
+
+	if id < user_2 {
+		user_1 = id
+	} else {
+		user_1, user_2 = user_2, id
+	}
+	_, err := Pool.Exec(context.Background(), "insert into contacts(user1, user2) values($1, $2)", user_1, user_2)
+
 	return err
 }
 
