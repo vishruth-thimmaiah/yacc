@@ -4,9 +4,14 @@
 			<label>Change Username</label>
 			<i class="fa-solid fa-arrow-right"></i>
 		</RouterLink>
+		<hr />
 		<div>
 			<label>Logout</label>
-			<button class="imp" @click="Logout"> Logout</button>
+			<button class="imp" @click="Logout">Logout</button>
+		</div>
+		<div>
+			<label>Delete Account</label>
+			<button class="imp" @click="Delete">Delete</button>
 		</div>
 	</div>
 </template>
@@ -20,6 +25,14 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 async function Logout() {
 	await axios.get("/api/auth/logout").then(function () {
+		setLoggedIn(false)
+		router.push("/login")
+	})
+}
+
+
+async function Delete() {
+	await axios.get("/api/auth/delete").then(function () {
 		setLoggedIn(false)
 		router.push("/login")
 	})
