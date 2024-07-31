@@ -1,5 +1,6 @@
 <template>
 	<div :class="sending ? 'receiving' : 'sending'">
+		<img v-if="img" :src="img" />
 		<label class="message">{{ message }}</label>
 		<label class="date">{{ cleanDate }}</label>
 	</div>
@@ -16,7 +17,8 @@ const DAYS = HRS * 24
 const props = defineProps({
 	message: String,
 	date: [String, Number],
-	sending: Boolean
+	sending: Boolean,
+	img: String
 })
 
 const cleanDate = ref<string>("")
@@ -72,8 +74,7 @@ switch (true) {
 }
 
 .message {
-	padding-bottom: 1rem;
-	padding: 2rem;
+	padding: 1rem;
 }
 
 .date {
@@ -81,5 +82,10 @@ switch (true) {
 	padding: 0.5rem;
 	padding-top: 0;
 	color: #222222;
+}
+
+img {
+	margin: 1rem;
+	border-radius: 10px;
 }
 </style>

@@ -1,10 +1,16 @@
 <template>
-	<div>
-		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent" :date="msg.date"></message>
+	<div id="messages">
+		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent" :date="msg.date"
+			:img="msg.attachment"></message>
 	</div>
 
 	<form @submit.prevent="submitMessage" class="new-message">
 		<input placeholder="send something" v-model="newMessage"></input>
+		<input :disabled="attachmentUrl != ''" accept="image/*" @change="attachFile($event)" id="file"
+			class="file-upload-input" type="file" />
+		<label for="file">
+			<i :class="'fa-solid fa-paperclip ' + (attachmentUrl != '' ? 'disabled' : '')"></i>
+		</label>
 		<button><i class="fa-solid fa-reply fa-rotate-180 fa-fw"></i></button>
 	</form>
 </template>
@@ -20,7 +26,8 @@ const route = useRoute()
 const props = defineProps({
 	chat: String
 })
-const messages = ref<{ message: string, sent: boolean, date: string | number }[]>([])
+
+const messages = ref<{ message: string, sent: boolean, date: string | number, attachment: string }[]>([])
 
 async function loadMessages() {
 	messages.value = []
@@ -39,12 +46,27 @@ watch(() => route.params, async function () {
 	loadMessages()
 })
 
-const newMessage = ref<string>()
+
+const newMessage = ref<string>("")
+var attachment: File | null = null
+const attachmentUrl = ref<string>("")
+
+function attachFile(event: Event) {
+
+	const target = event.target as HTMLInputElement
+	if (target.files) {
+		attachment = target.files[0]
+		attachmentUrl.value = URL.createObjectURL(target.files[0])
+	}
+}
+
 function submitMessage() {
-	if (newMessage.value && newMessage.value != "") {
-		Send(props.chat!, newMessage.value)
-		messages.value.push({ message: newMessage.value, sent: false, date: Date.now() })
+	if ((newMessage.value && newMessage.value != "") || attachmentUrl.value != "") {
+		Send(props.chat!, newMessage.value, attachment)
+		messages.value.push({ message: newMessage.value, sent: false, date: Date.now(), attachment: attachmentUrl.value })
 		newMessage.value = ""
+		attachment = null
+		attachmentUrl.value = ""
 	}
 }
 
@@ -53,7 +75,7 @@ const r = Receive()
 r.addEventListener('message', function (event) {
 	const response = JSON.parse(event.data)
 	if (response.chat_id === props.chat!) {
-		messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date) })
+		messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
 	}
 })
 
@@ -83,6 +105,19 @@ r.addEventListener('message', function (event) {
 		&:focus {
 			outline: none;
 			color: var(--text-primary-color);
+		}
+	}
+
+	.file-upload-input {
+		display: none;
+	}
+
+	.fa-paperclip {
+		color: var(--text-primary-color);
+		margin: 0 8px;
+
+		&.disabled {
+			color: grey;
 		}
 	}
 

@@ -17,7 +17,7 @@ import sidebar from '@/components/sidebar.vue';
 	bottom: 0;
 	right: 0.5rem;
 	overflow-y: scroll;
-	padding-bottom: 4rem;
+	padding: 4rem 0;
 }
 
 @media screen and (max-width: 800px) {
