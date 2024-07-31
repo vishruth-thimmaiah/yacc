@@ -27,11 +27,11 @@ func Setup() {
 
 }
 
-func Upload(file multipart.File, fileheader *multipart.FileHeader) (string, error) {
+func Upload(file multipart.File, fileheader *multipart.FileHeader, image_name string) (string, error) {
 
 	_, err := client.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String("/media"),
-		Key:         aws.String(fileheader.Filename),
+		Key:         aws.String(image_name + "/" + fileheader.Filename),
 		Body:        file,
 		ContentType: aws.String("image"),
 	})
@@ -42,9 +42,9 @@ func Upload(file multipart.File, fileheader *multipart.FileHeader) (string, erro
 
 	req, _ := client.GetObjectRequest(&s3.GetObjectInput{
 		Bucket: aws.String("/media"),
-		Key:    aws.String(fileheader.Filename),
+		Key:    aws.String(image_name + "/" + fileheader.Filename),
 	})
-	object_url, err := req.Presign(time.Hour*24*365)
+	object_url, err := req.Presign(time.Hour * 24 * 365)
 
 	if err != nil {
 		return "", err

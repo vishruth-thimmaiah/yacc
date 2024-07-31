@@ -6,7 +6,7 @@ export async function Send(target: string, message: string, attachment: File | n
 	if (socket.readyState === 1) {
 		var attachment_url: string | null = null
 		if (attachment) {
-			attachment_url = await UploadFile(attachment)
+			attachment_url = await UploadFile(attachment, target)
 		}
 		socket.send(JSON.stringify({
 			chat_id: target,
@@ -21,10 +21,11 @@ export function Receive(): WebSocket {
 }
 
 const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/messages/upload'
-async function UploadFile(file: File): Promise<string | null> {
+async function UploadFile(file: File, chat_id: string): Promise<string | null> {
 
 	var formData = new FormData()
 	formData.append("image", file)
+	formData.append("image_name", chat_id)
 
 	return axios.post(path, formData, {
 		headers: {

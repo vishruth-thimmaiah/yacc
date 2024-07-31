@@ -109,11 +109,13 @@ func Attachments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	image_name := r.FormValue("image_name")
+
 	defer file.Close()
 
 	var attachment Attachment
 
-	attachment.Url, err = bucket.Upload(file, header)
+	attachment.Url, err = bucket.Upload(file, header, image_name)
 
 	err = json.NewEncoder(w).Encode(&attachment)
 	if err != nil {
