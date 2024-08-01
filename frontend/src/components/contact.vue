@@ -14,7 +14,6 @@ const props = defineProps({
 const contact: Ref = inject('chat_name')!
 
 const r = useRoute()
-console.log(r.path, `/u/${props.chat}`)
 if (r.path === `/u/${props.chat}`) {
 	contact.value = props.name
 }

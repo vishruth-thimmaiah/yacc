@@ -84,7 +84,8 @@ switch (true) {
 	color: #222222;
 }
 
-img {
+img,
+video {
 	margin: 1rem;
 	border-radius: 10px;
 }

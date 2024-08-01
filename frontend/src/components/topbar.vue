@@ -30,7 +30,6 @@ function toggleSidebar() {
 	background: var(--accent-color);
 	height: 5rem;
 	border-radius: 10px;
-	display: flex;
 	flex-direction: row;
 	color: var(--text-secondary-color);
 

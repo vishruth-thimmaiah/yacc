@@ -1,7 +1,7 @@
 <template>
 	<sidebar />
 	<div class="messages">
-		<Topbar />
+		<topbar />
 		<RouterView />
 	</div>
 </template>
@@ -24,7 +24,11 @@ provide('chat_name', chat_name)
 	bottom: 0;
 	right: 0.5rem;
 	overflow-y: scroll;
-	padding: 4rem 0;
+	padding-bottom: 4rem;
+}
+
+.topbar {
+	display: none;
 }
 
 @media screen and (max-width: 800px) {
@@ -32,6 +36,9 @@ provide('chat_name', chat_name)
 		visibility: hidden;
 	}
 
+	.topbar {
+		display: flex;
+	}
 
 	.sidebar.open {
 		visibility: visible;
@@ -40,6 +47,7 @@ provide('chat_name', chat_name)
 
 	.messages {
 		left: 0;
+		padding-top: 4rem;
 	}
 }
 </style>
