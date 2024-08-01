@@ -1,12 +1,15 @@
 <template>
 	<div :class="sending ? 'receiving' : 'sending'">
-		<img v-if="img" :src="img" />
+		<img v-if="attachment_type === 'image'" :src="attachment" />
+		<video v-if="attachment_type === 'video'" controls :src="attachment" />
+		<audio v-if="attachment_type === 'audio'" controls :src="attachment" />
 		<label class="message">{{ message }}</label>
 		<label class="date">{{ cleanDate }}</label>
 	</div>
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
 import { ref } from 'vue';
 
 const SEC = 1000
@@ -18,8 +21,26 @@ const props = defineProps({
 	message: String,
 	date: [String, Number],
 	sending: Boolean,
-	img: String
+	attachment_url: String
 })
+
+const attachment = ref<string>()
+const attachment_type = ref<string>()
+
+async function DownloadMedia() {
+	if (props.attachment_url) {
+		axios.get(props.attachment_url, {
+			responseType: "blob",
+		}).then(function (response) {
+			attachment_type.value = response.headers["content-type"].split("/")[0];
+			attachment.value = URL.createObjectURL(response.data)
+
+		}).catch(function () {
+			console.warn("error loading attachment:", props.attachment_url)
+		})
+	}
+}
+DownloadMedia()
 
 const cleanDate = ref<string>("")
 const diff = Date.now() - Date.parse(props.date!.toString())
@@ -85,7 +106,8 @@ switch (true) {
 }
 
 img,
-video {
+video,
+audio {
 	margin: 1rem;
 	border-radius: 10px;
 }

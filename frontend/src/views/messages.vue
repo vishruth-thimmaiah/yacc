@@ -1,7 +1,7 @@
 <template>
 	<div id="messages">
 		<message v-for="msg in messages" :message="msg.message" :sending="msg.sent" :date="msg.date"
-			:img="msg.attachment"></message>
+			:attachment_url="msg.attachment"></message>
 	</div>
 
 	<form @submit.prevent="submitMessage" class="new-message">
