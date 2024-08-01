@@ -27,13 +27,13 @@ func Setup() {
 
 }
 
-func Upload(file multipart.File, fileheader *multipart.FileHeader, image_name string) (string, error) {
+func Upload(file multipart.File, fileheader *multipart.FileHeader, image_name string, content_type string) (string, error) {
 
 	_, err := client.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String("/media"),
 		Key:         aws.String(image_name + "/" + fileheader.Filename),
 		Body:        file,
-		ContentType: aws.String("image"),
+		ContentType: aws.String(content_type),
 	})
 
 	if err != nil {

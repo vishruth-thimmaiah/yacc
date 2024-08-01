@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	math_rand "math/rand"
+	"strings"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -51,4 +52,14 @@ func RandUsername() string {
 		result[i] = letters[math_rand.Intn(len(letters))]
 	}
 	return string(result)
+}
+
+func MatchFileType(filetype string) bool {
+	typeof := strings.Split(filetype, "/")[0]
+	for _, filetypes := range []string{"image", "video", "audio"} {
+		if typeof == filetypes {
+			return true
+		}
+	}
+	return false
 }

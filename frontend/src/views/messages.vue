@@ -6,7 +6,7 @@
 
 	<form @submit.prevent="submitMessage" class="new-message">
 		<input placeholder="send something" v-model="newMessage"></input>
-		<input :disabled="attachmentUrl != ''" accept="image/*" @change="attachFile($event)" id="file"
+		<input :disabled="attachmentUrl != ''" accept="image/*,video/*,audio/*" @change="attachFile($event)" id="file"
 			class="file-upload-input" type="file" />
 		<label :class="'upload ' + (attachmentUrl != '' ? 'disabled' : '')" for="file">
 			<i class="fa-solid fa-paperclip"></i>

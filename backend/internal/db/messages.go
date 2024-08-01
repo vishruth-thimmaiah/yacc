@@ -13,7 +13,7 @@ type Message struct {
 }
 
 func GetMessages(chat_id string, sender_id string) ([]Message, error) {
-	sent, err := Pool.Query(context.Background(), "select message, date, senderid!=$1, attachment from messages where chat_id = $2", sender_id, chat_id)
+	sent, err := Pool.Query(context.Background(), "select message, date, senderid!=$1, attachment from messages where chat_id = $2 order by date", sender_id, chat_id)
 
 	if err != nil {
 		return nil, err

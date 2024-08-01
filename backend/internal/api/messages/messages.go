@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 	"yacc/backend/internal/db"
+	"yacc/backend/internal/helpers"
 	"yacc/backend/internal/s3"
 
 	"github.com/gorilla/websocket"
@@ -58,11 +59,11 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
-	Chat_id     string    `json:"chat_id"`
-	Receiver_id string    `json:"-"`
-	Date        time.Time `json:"date"`
-	Message     string    `json:"message"`
-	Attachment_url string `json:"attachment"`
+	Chat_id        string    `json:"chat_id"`
+	Receiver_id    string    `json:"-"`
+	Date           time.Time `json:"date"`
+	Message        string    `json:"message"`
+	Attachment_url string    `json:"attachment"`
 }
 
 type Attachment struct {
@@ -108,14 +109,20 @@ func Attachments(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error reading file", http.StatusInternalServerError)
 		return
 	}
+	defer file.Close()
+
+	content_type := header.Header.Get("Content-Type")
+	ok := helpers.MatchFileType(content_type)
+	if !ok {
+		http.Error(w, "invalid file", http.StatusBadRequest)
+		return
+	}
 
 	image_name := r.FormValue("image_name")
 
-	defer file.Close()
-
 	var attachment Attachment
 
-	attachment.Url, err = bucket.Upload(file, header, image_name)
+	attachment.Url, err = bucket.Upload(file, header, image_name, content_type)
 
 	err = json.NewEncoder(w).Encode(&attachment)
 	if err != nil {
