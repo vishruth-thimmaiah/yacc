@@ -1,4 +1,4 @@
-package api
+package contacts
 
 import (
 	"encoding/json"

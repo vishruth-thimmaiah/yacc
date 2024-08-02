@@ -60,6 +60,11 @@ func Signup(email string, passwd string, username string) (string, *pgconn.PgErr
 	return session_id.String(), nil
 }
 
+func Logout(session_id string) error {
+	_, err := Pool.Exec(context.Background(), `delete from session where sessionid = $1`, session_id)
+	return err
+}
+
 func UserInfo(session_id string) (string, error) {
 	var user_id string
 	err := Pool.QueryRow(context.Background(), `select id from session where sessionid = $1 limit 1`, session_id).Scan(&user_id)
@@ -68,19 +73,4 @@ func UserInfo(session_id string) (string, error) {
 	}
 
 	return user_id, err
-}
-
-func Logout(session_id string) error {
-	_, err := Pool.Exec(context.Background(), `delete from session where sessionid = $1`, session_id)
-	return err
-}
-
-func ChangeUsername(username string, user_id string) error {
-	_, err := Pool.Exec(context.Background(), `update users set username=$1 where id=$2`, username, user_id)
-	return err
-}
-
-func DeleteAccount(user_id string) error {
-	_, err := Pool.Exec(context.Background(), `delete from users where id=$1`, user_id)
-	return err
 }

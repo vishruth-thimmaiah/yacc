@@ -5,9 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"yacc/backend/internal/api"
 	"yacc/backend/internal/api/auth"
+	"yacc/backend/internal/api/contacts"
 	"yacc/backend/internal/api/messages"
+	"yacc/backend/internal/api/user"
 	"yacc/backend/internal/db"
 	"yacc/backend/internal/s3"
 
@@ -40,12 +41,13 @@ func Start(conn *pgxpool.Pool) {
 	http.HandleFunc("/api/auth/signup", auth.Signup)
 	http.HandleFunc("/api/auth/verify", auth.Verify)
 	http.HandleFunc("/api/auth/logout", auth.Logout)
-	http.HandleFunc("/api/auth/username", auth.ChangeUsername)
-	http.HandleFunc("/api/auth/delete", auth.DeleteAccount)
 
-	http.HandleFunc("/api/user/contacts", api.Contacts)
+	http.HandleFunc("/api/auth/username", user.ChangeUsername)
+	http.HandleFunc("/api/auth/delete", user.DeleteAccount)
+
+	http.HandleFunc("/api/user/contacts", contacts.Contacts)
 	http.HandleFunc("/api/user/message", messages.LoadMessages)
-	http.HandleFunc("/api/addcontact", api.NewContact)
+	http.HandleFunc("/api/addcontact", contacts.NewContact)
 
 	http.HandleFunc("/api/messages", func(w http.ResponseWriter, r *http.Request) {
 		messages.Messages(hub, w, r)
