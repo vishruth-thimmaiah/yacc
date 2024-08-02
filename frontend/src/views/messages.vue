@@ -70,12 +70,28 @@ function submitMessage() {
 	}
 }
 
-const r = Receive()
+function notify(message_body: string) {
+	if ("Notification" in window) {
+		if (Notification.permission === "granted") {
+			new Notification(message_body);
+		} else if (Notification.permission !== "denied") {
+			Notification.requestPermission().then((permission) => {
+				if (permission === "granted") {
+					new Notification(message_body);
+				}
+			});
+		}
+	}
+}
 
+const r = Receive()
 r.addEventListener('message', function (event) {
 	const response = JSON.parse(event.data)
 	if (response.chat_id === props.chat!) {
 		messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
+	}
+	else {
+		notify(response.message)
 	}
 })
 
