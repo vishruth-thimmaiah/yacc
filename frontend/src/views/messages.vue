@@ -11,6 +11,9 @@
 		<label :class="'upload ' + (attachmentUrl != '' ? 'disabled' : '')" for="file">
 			<i class="fa-solid fa-paperclip"></i>
 		</label>
+		<RouterLink :to="'/u/' + chat + '/call'">
+			<i class="fa-solid fa-video"></i>
+		</RouterLink>
 		<button><i class="fa-solid fa-reply fa-rotate-180 fa-fw"></i></button>
 	</form>
 </template>
@@ -19,10 +22,11 @@
 import message from '@/components/message.vue';
 import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { Receive, Send } from "@/api/messages"
 
 const route = useRoute()
+const router = useRouter()
 const props = defineProps({
 	chat: String
 })
@@ -86,9 +90,15 @@ function notify(message_body: string) {
 
 const r = Receive()
 r.addEventListener('message', function (event) {
-	const response = JSON.parse(event.data)
+	const response: { message: string, attachment: string, date: string, chat_id: string } = JSON.parse(event.data)
 	if (response.chat_id === props.chat!) {
-		messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
+		if (response.message.startsWith("rtc.req")) {
+			sessionStorage.setItem('rtc', response.message.substring(7))
+			router.push('/u/' + props.chat! + '/call')
+		}
+		else {
+			messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
+		}
 	}
 	else {
 		notify(response.message)
@@ -136,6 +146,11 @@ r.addEventListener('message', function (event) {
 		&.disabled {
 			color: grey;
 		}
+	}
+
+	.fa-video {
+		color: var(--text-primary-color);
+		margin: auto 8px;
 	}
 
 	button {

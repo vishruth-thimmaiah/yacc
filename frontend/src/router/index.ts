@@ -9,6 +9,7 @@ import Settings from '@/views/settings.vue'
 import General from '@/views/settings/general.vue'
 import Account from '@/views/settings/account.vue'
 import Username from '@/views/settings/username.vue'
+import Call from '@/views/call.vue'
 import { getLoggedIn } from '@/middleware'
 
 const router = createRouter({
@@ -31,7 +32,14 @@ const router = createRouter({
 					path: "/u/:chat",
 					component: Messages,
 					props: true,
-					name: "users"
+					name: "users",
+
+				},
+				{
+					path: "/u/:chat/call",
+					component: Call,
+					props: true,
+					name: "Call"
 				}
 			]
 		},

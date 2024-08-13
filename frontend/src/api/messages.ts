@@ -1,6 +1,7 @@
 import axios from "axios"
 
-const socket = new WebSocket("ws://localhost:3000/api/messages")
+// const socket = new WebSocket("ws://localhost:3000/api/messages")
+const socket = new WebSocket("ws://" + location.host + "/api/messages")
 
 export async function Send(target: string, message: string, attachment: File | null) {
 	if (socket.readyState === 1) {
