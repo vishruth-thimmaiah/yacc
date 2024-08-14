@@ -86,6 +86,7 @@ onMounted(async function () {
 		Send("rtcreq", props.chat!, JSON.stringify(offer), null)
 	}
 })
+
 </script>
 
 <style scoped>
@@ -95,11 +96,33 @@ div {
 	right: 1rem;
 	top: 1rem;
 	bottom: 1rem;
-	background: var(--secondary-color);
+	background: black;
+	border-radius: 10px;
 }
 
 video {
-	width: 400px;
-	height: 400px;
+	position: absolute;
+}
+
+#local {
+	height: 25%;
+	bottom: 1em;
+	left: 1em;
+	z-index: 20;
+	border-radius: 10px;
+	border: var(--accent-color) 2px solid;
+}
+
+#remote {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: max-content;
+	height: max-content;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: cover;
+	margin: auto;
 }
 </style>
