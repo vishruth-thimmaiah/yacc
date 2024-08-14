@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import message from '@/components/message.vue';
 import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
+import { inject, onMounted, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Receive, Send } from "@/api/messages"
 
@@ -42,15 +42,6 @@ async function loadMessages() {
 	})
 }
 
-onMounted(async () => {
-	loadMessages()
-})
-
-watch(() => route.params, async function () {
-	loadMessages()
-})
-
-
 const newMessage = ref<string>("")
 var attachment: File | null = null
 const attachmentUrl = ref<string>("")
@@ -66,7 +57,7 @@ function attachFile(event: Event) {
 
 function submitMessage() {
 	if ((newMessage.value && newMessage.value != "") || attachmentUrl.value != "") {
-		Send(props.chat!, newMessage.value, attachment)
+		Send("message", props.chat!, newMessage.value, attachment)
 		messages.value.push({ message: newMessage.value, sent: false, date: Date.now(), attachment: attachmentUrl.value })
 		newMessage.value = ""
 		attachment = null
@@ -89,20 +80,30 @@ function notify(message_body: string) {
 }
 
 const r = Receive()
-r.addEventListener('message', function (event) {
-	const response: { message: string, attachment: string, date: string, chat_id: string } = JSON.parse(event.data)
-	if (response.chat_id === props.chat!) {
-		if (response.message.startsWith("rtc.req")) {
-			sessionStorage.setItem('rtc', response.message.substring(7))
+
+const rtcrequest = inject<Ref<string>>("rtcrequest")
+
+onMounted(async () => {
+	loadMessages()
+
+	r.addEventListener('message', function (event) {
+		const response: { type: string, message: string, attachment: string, date: string, chat_id: string } = JSON.parse(event.data)
+		if (response.type === "message") {
+			if (response.chat_id === props.chat!) {
+				messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
+			}
+			else {
+				notify(response.message)
+			}
+		} else if (response.type === "rtcreq") {
+			rtcrequest!.value = response.message
 			router.push('/u/' + props.chat! + '/call')
 		}
-		else {
-			messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
-		}
-	}
-	else {
-		notify(response.message)
-	}
+	})
+})
+
+watch(() => route.params, async function () {
+	loadMessages()
 })
 
 </script>

@@ -59,6 +59,7 @@ var upgrader = websocket.Upgrader{
 }
 
 type Message struct {
+	Type           string    `json:"type"`
 	Chat_id        string    `json:"chat_id"`
 	Receiver_id    string    `json:"-"`
 	Date           time.Time `json:"date"`

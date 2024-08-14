@@ -37,9 +37,9 @@ func (h *Hub) Run() {
 			log.Println("client unregistered")
 
 		case message := <-h.message:
-			for client_index := range h.clients {
-				if h.clients[client_index].user_id == message.Receiver_id {
-					go h.clients[client_index].Write(message)
+			for _, client := range h.clients {
+				if client.user_id == message.Receiver_id {
+					go client.Write(message)
 					break
 				}
 			}

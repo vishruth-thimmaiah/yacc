@@ -36,7 +36,9 @@ func (c *Client) read() {
 
 		c.hub.message <- message
 
-		db.SaveMessage(message.Message, c.user_id, message.Chat_id, message.Attachment_url)
+		if message.Type == "message" {
+			db.SaveMessage(message.Message, c.user_id, message.Chat_id, message.Attachment_url)
+		}
 	}
 }
 

@@ -7,23 +7,23 @@
 
 <script setup lang="ts">
 import { Receive, Send } from '@/api/messages';
-import { onMounted } from 'vue';
+import { type Ref, inject, onMounted } from 'vue';
 
 const props = defineProps<{
 	chat: string
 }>()
+
+const rtcrequest = inject<Ref<string>>("rtcrequest")
+const r = Receive()
 
 onMounted(async function () {
 
 	const localStream = document.getElementById("local") as HTMLVideoElement
 	const remoteStream = document.getElementById("remote") as HTMLVideoElement
 
-
 	const localMedia = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
 	localStream.srcObject = localMedia
 
-	const r = Receive()
-	const sess = sessionStorage.getItem('rtc')
 	const conn = new RTCPeerConnection({
 		iceServers: [
 			{ urls: 'stun:stun.l.google.com:19302' },
@@ -35,24 +35,23 @@ onMounted(async function () {
 
 
 	conn.addEventListener('icecandidate', function (event) {
-		Send(props.chat!, "rtc.can" + JSON.stringify(event.candidate), null)
+		Send("rtccan", props.chat!, JSON.stringify(event.candidate), null)
 	})
 
 	r.addEventListener('message', function (event) {
 		const res = JSON.parse(event.data)
-		if (res.message.startsWith('rtc.can')) {
-			conn.addIceCandidate(JSON.parse(res.message.substring(7)))
+		if (res.type === "rtccan") {
+			conn.addIceCandidate(JSON.parse(res.message))
 		}
 	})
 
-	conn.addEventListener('connectionstatechange', event => {
+	conn.addEventListener('connectionstatechange', _ => {
 		if (conn.connectionState === 'connected') {
 			alert('connected')
 		}
 	});
 
 	conn.addEventListener('track', async function (event) {
-		console.log('new stream')
 		const [remotev] = event.streams;
 		remoteStream.srcObject = remotev
 	})
@@ -61,19 +60,19 @@ onMounted(async function () {
 		conn.addTrack(stream, localMedia)
 	})
 
-	if (sess) {
-		await conn.setRemoteDescription(new RTCSessionDescription(JSON.parse(sess)))
+	if (rtcrequest?.value !== '') {
+		await conn.setRemoteDescription(new RTCSessionDescription(JSON.parse(rtcrequest!.value)))
 		const ans = await conn.createAnswer()
 		await conn.setLocalDescription(ans)
-		Send(props.chat!, "rtc.ans" + JSON.stringify(ans), null)
+		Send("rtcans", props.chat!, JSON.stringify(ans), null)
 	}
 	else {
 
 		r.addEventListener('message', async function (event) {
 
 			const res = JSON.parse(event.data)
-			if (res.message.startsWith("rtc.ans")) {
-				const response = JSON.parse(res.message.substring(7))
+			if (res.type === "rtcans") {
+				const response = JSON.parse(res.message)
 
 				const remote = new RTCSessionDescription(response)
 				await conn.setRemoteDescription(remote)
@@ -84,13 +83,9 @@ onMounted(async function () {
 		const offer = await conn.createOffer()
 		await conn.setLocalDescription(offer)
 
-		Send(props.chat!, "rtc.req" + JSON.stringify(offer), null)
+		Send("rtcreq", props.chat!, JSON.stringify(offer), null)
 	}
-
-
 })
-
-
 </script>
 
 <style scoped>

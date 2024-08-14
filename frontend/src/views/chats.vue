@@ -11,7 +11,8 @@ import sidebar from '@/components/sidebar.vue';
 import Topbar from '@/components/topbar.vue';
 import { provide, ref } from 'vue';
 
-
+const rtcrequest = ref('')
+provide("rtcrequest", rtcrequest)
 const chat_name = ref('')
 provide('chat_name', chat_name)
 </script>

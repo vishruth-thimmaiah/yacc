@@ -3,13 +3,14 @@ import axios from "axios"
 // const socket = new WebSocket("ws://localhost:3000/api/messages")
 const socket = new WebSocket("ws://" + location.host + "/api/messages")
 
-export async function Send(target: string, message: string, attachment: File | null) {
+export async function Send(type: string, target: string, message: string, attachment: File | null) {
 	if (socket.readyState === 1) {
 		var attachment_url: string | null = null
 		if (attachment) {
 			attachment_url = await UploadFile(attachment, target)
 		}
 		socket.send(JSON.stringify({
+			type: type,
 			chat_id: target,
 			message: message,
 			attachment: attachment_url
