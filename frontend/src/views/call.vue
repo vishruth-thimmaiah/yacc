@@ -2,54 +2,74 @@
 	<div>
 		<video autoplay playsinline id="local"></video>
 		<video autoplay playsinline id="remote"></video>
+		<div class="controls">
+			<i @click="endCall" class="fa-solid fa-phone fa-fw"></i>
+			<!-- <i @click="toggleV" class="fa-solid fa-video fa-fw"></i> -->
+			<!-- <i class="fa-solid fa-microphone fa-fw"></i> -->
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { Receive, Send } from '@/api/messages';
 import { type Ref, inject, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
 	chat: string
 }>()
+const router = useRouter()
 
 const rtcrequest = inject<Ref<string>>("rtcrequest")
 const r = Receive()
+var localMedia: MediaStream
+
+const conn = new RTCPeerConnection({
+	iceServers: [
+		{ urls: 'stun:stun.l.google.com:19302' },
+		{ urls: "stun:stun.l.google.com:19302" },
+		{ urls: "stun:stun.l.google.com:5349" },
+		{ urls: "stun:stun1.l.google.com:3478" },
+	]
+})
+
+conn.addEventListener('icecandidate', function (event) {
+	Send("rtccan", props.chat!, JSON.stringify(event.candidate), null)
+})
+
+r.addEventListener('message', function (event) {
+	const res = JSON.parse(event.data)
+	if (res.type === "rtccan") {
+		conn.addIceCandidate(JSON.parse(res.message))
+	}
+})
+
+conn.addEventListener('connectionstatechange', _ => {
+	switch (conn.connectionState) {
+		case 'connected':
+			alert('connected')
+			break
+		case 'disconnected':
+			router.push({ name: 'users' })
+			break
+	}
+});
+
+var trackid: MediaStreamTrack | null
+
+function endCall() {
+	conn.close()
+	router.push({ name: 'users' })
+}
+
 
 onMounted(async function () {
 
 	const localStream = document.getElementById("local") as HTMLVideoElement
 	const remoteStream = document.getElementById("remote") as HTMLVideoElement
 
-	const localMedia = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+	localMedia = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 	localStream.srcObject = localMedia
-
-	const conn = new RTCPeerConnection({
-		iceServers: [
-			{ urls: 'stun:stun.l.google.com:19302' },
-			{ urls: "stun:stun.l.google.com:19302" },
-			{ urls: "stun:stun.l.google.com:5349" },
-			{ urls: "stun:stun1.l.google.com:3478" },
-		]
-	})
-
-
-	conn.addEventListener('icecandidate', function (event) {
-		Send("rtccan", props.chat!, JSON.stringify(event.candidate), null)
-	})
-
-	r.addEventListener('message', function (event) {
-		const res = JSON.parse(event.data)
-		if (res.type === "rtccan") {
-			conn.addIceCandidate(JSON.parse(res.message))
-		}
-	})
-
-	conn.addEventListener('connectionstatechange', _ => {
-		if (conn.connectionState === 'connected') {
-			alert('connected')
-		}
-	});
 
 	conn.addEventListener('track', async function (event) {
 		const [remotev] = event.streams;
@@ -57,6 +77,7 @@ onMounted(async function () {
 	})
 
 	localMedia.getTracks().forEach(function (stream) {
+		trackid = stream
 		conn.addTrack(stream, localMedia)
 	})
 
@@ -108,21 +129,40 @@ video {
 	height: 25%;
 	bottom: 1em;
 	left: 1em;
-	z-index: 20;
+	z-index: 10;
 	border-radius: 10px;
 	border: var(--accent-color) 2px solid;
 }
 
 #remote {
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	top: 0.5em;
+	bottom: 0.5em;
+	left: 0.5em;
+	right: 0.5em;
 	width: max-content;
 	height: max-content;
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: cover;
 	margin: auto;
+}
+
+.controls {
+	position: absolute;
+	right: 0;
+	z-index: 15;
+	background: transparent;
+
+	i {
+		padding: 8px;
+		border-radius: 20px;
+		background: aquamarine;
+		margin: 2px;
+	}
+
+	i:first-of-type {
+		background: #e6665c;
+		padding: 8px 20px;
+	}
 }
 </style>
