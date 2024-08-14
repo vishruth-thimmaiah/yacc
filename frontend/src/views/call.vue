@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { Receive, Send } from '@/api/messages';
+import { Reciever, Send } from '@/api/messages';
 import { type Ref, inject, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -20,9 +20,7 @@ const props = defineProps<{
 }>()
 const router = useRouter()
 
-const rtcrequest = inject<Ref<string>>("rtcrequest")
-const r = Receive()
-var localMedia: MediaStream
+const rtcrequest = inject<Ref<RTCSessionDescriptionInit>>("rtcrequest")
 
 const conn = new RTCPeerConnection({
 	iceServers: [
@@ -37,10 +35,11 @@ conn.addEventListener('icecandidate', function (event) {
 	Send("rtccan", props.chat!, JSON.stringify(event.candidate), null)
 })
 
-r.addEventListener('message', function (event) {
-	const res = JSON.parse(event.data)
+const reciever = Reciever
+reciever.addEventListener('rtc', function (event: any) {
+	const res = event.detail
 	if (res.type === "rtccan") {
-		conn.addIceCandidate(JSON.parse(res.message))
+		conn.addIceCandidate(res.desc)
 	}
 })
 
@@ -55,7 +54,7 @@ conn.addEventListener('connectionstatechange', _ => {
 	}
 });
 
-var trackid: MediaStreamTrack | null
+
 
 function endCall() {
 	conn.close()
@@ -68,8 +67,9 @@ onMounted(async function () {
 	const localStream = document.getElementById("local") as HTMLVideoElement
 	const remoteStream = document.getElementById("remote") as HTMLVideoElement
 
-	localMedia = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+	const localMedia = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 	localStream.srcObject = localMedia
+
 
 	conn.addEventListener('track', async function (event) {
 		const [remotev] = event.streams;
@@ -77,23 +77,23 @@ onMounted(async function () {
 	})
 
 	localMedia.getTracks().forEach(function (stream) {
-		trackid = stream
 		conn.addTrack(stream, localMedia)
 	})
 
-	if (rtcrequest?.value !== '') {
-		await conn.setRemoteDescription(new RTCSessionDescription(JSON.parse(rtcrequest!.value)))
+
+	if (rtcrequest?.value) {
+		await conn.setRemoteDescription(new RTCSessionDescription(rtcrequest!.value))
 		const ans = await conn.createAnswer()
 		await conn.setLocalDescription(ans)
 		Send("rtcans", props.chat!, JSON.stringify(ans), null)
 	}
 	else {
 
-		r.addEventListener('message', async function (event) {
+		reciever.addEventListener('rtc', async function (event: any) {
 
-			const res = JSON.parse(event.data)
+			const res = event.detail
 			if (res.type === "rtcans") {
-				const response = JSON.parse(res.message)
+				const response = res.desc
 
 				const remote = new RTCSessionDescription(response)
 				await conn.setRemoteDescription(remote)
@@ -106,6 +106,7 @@ onMounted(async function () {
 
 		Send("rtcreq", props.chat!, JSON.stringify(offer), null)
 	}
+
 })
 
 </script>

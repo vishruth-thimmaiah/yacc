@@ -1,6 +1,5 @@
 import axios from "axios"
 
-// const socket = new WebSocket("ws://localhost:3000/api/messages")
 const socket = new WebSocket("ws://" + location.host + "/api/messages")
 
 export async function Send(type: string, target: string, message: string, attachment: File | null) {
@@ -18,9 +17,17 @@ export async function Send(type: string, target: string, message: string, attach
 	}
 }
 
-export function Receive(): WebSocket {
-	return socket
-}
+export const Reciever = new EventTarget()
+
+socket.addEventListener('message', function(res) {
+	const json = JSON.parse(res.data)
+	if (json.type === 'message') {
+		Reciever.dispatchEvent(new CustomEvent('message', { detail: json }))
+	}
+	else if (json.type.startsWith('rtc')) {
+		Reciever.dispatchEvent(new CustomEvent('rtc', { detail: { desc: JSON.parse(json.message), type: json.type } }))
+	}
+})
 
 const path = (import.meta.env.VITE_BACKEND_URL || "") + '/api/messages/upload'
 async function UploadFile(file: File, chat_id: string): Promise<string | null> {

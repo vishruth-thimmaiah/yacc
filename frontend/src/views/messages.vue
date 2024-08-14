@@ -23,15 +23,19 @@ import message from '@/components/message.vue';
 import axios from 'axios';
 import { inject, onMounted, ref, watch, type Ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { Receive, Send } from "@/api/messages"
+import { Reciever, Send } from "@/api/messages"
 
-const route = useRoute()
-const router = useRouter()
 const props = defineProps({
 	chat: String
 })
 
+const route = useRoute()
+const router = useRouter()
+
 const messages = ref<{ message: string, sent: boolean, date: string | number, attachment: string }[]>([])
+const newMessage = ref<string>("")
+var attachment: File | null = null
+const attachmentUrl = ref<string>("")
 
 async function loadMessages() {
 	messages.value = []
@@ -41,10 +45,6 @@ async function loadMessages() {
 		messages.value = response.data
 	})
 }
-
-const newMessage = ref<string>("")
-var attachment: File | null = null
-const attachmentUrl = ref<string>("")
 
 function attachFile(event: Event) {
 
@@ -79,24 +79,25 @@ function notify(message_body: string) {
 	}
 }
 
-const r = Receive()
+const recieve = Reciever
 
 const rtcrequest = inject<Ref<string>>("rtcrequest")
 
 onMounted(async () => {
 	loadMessages()
 
-	r.addEventListener('message', function (event) {
-		const response: { type: string, message: string, attachment: string, date: string, chat_id: string } = JSON.parse(event.data)
-		if (response.type === "message") {
-			if (response.chat_id === props.chat!) {
-				messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
-			}
-			else {
-				notify(response.message)
-			}
-		} else if (response.type === "rtcreq") {
-			rtcrequest!.value = response.message
+	recieve.addEventListener('message', function (event: any) {
+		const response: { type: string, message: string, attachment: string, date: string, chat_id: string } = event.detail
+		if (response.chat_id === props.chat!) {
+			messages.value.push({ message: response.message, sent: true, date: Date.parse(response.date), attachment: response.attachment })
+		}
+		else {
+			notify(response.message)
+		}
+	})
+	recieve.addEventListener('rtc', function (event: any) {
+		if (event.detail.type === "rtcreq") {
+			rtcrequest!.value = event.detail.desc
 			router.push('/u/' + props.chat! + '/call')
 		}
 	})
