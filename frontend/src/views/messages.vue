@@ -42,7 +42,7 @@ async function loadMessages() {
 	axios.post((import.meta.env.VITE_BACKEND_URL || "") + "/api/user/message", {
 		chat_id: props.chat
 	}).then(function (response) {
-		messages.value = response.data
+		messages.value = response.data || []
 	})
 }
 
